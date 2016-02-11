@@ -4,14 +4,14 @@
 *.userprefs
 *.unityproj
 
-/ClientProject/Library/*.log
-/ClientProject/Library/AssetServerCacheV3
-/ClientProject/Library/CurrentLayout.dwlt
-/ClientProject/Library/ScriptMapper
-/ClientProject/Library/assetDatabase3
-/ClientProject/Library/guidmapper
-/ClientProject/Library/shadercompiler-1.log
-/ClientProject/Library/ScriptAssemblies
-/ClientProject/Library/ShaderCache
-/ClientProject/Library/metadata
-/ClientProject/Temp
+/Client/Library/*.log
+/Client/Library/AssetServerCacheV3
+/Client/Library/CurrentLayout.dwlt
+/Client/Library/ScriptMapper
+/Client/Library/assetDatabase3
+/Client/Library/guidmapper
+/Client/Library/shadercompiler-1.log
+/Client/Library/ScriptAssemblies
+/Client/Library/ShaderCache
+/Client/Library/metadata
+/Client/Temp
