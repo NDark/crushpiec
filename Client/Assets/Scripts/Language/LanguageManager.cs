@@ -25,7 +25,7 @@ public class LanguageManager : MonoBehaviour
 	
 	public Text m_DefendQuestionLabel = null ;
 	public Text [] m_DenfendButtonText ;
-
+	public int [] m_DefendRandomMapper = new int[4] ;
 
 	public DummyBattlePlay m_BattlePlay = null ;
 	public DummyServerRequester m_Server = null ;
@@ -76,13 +76,15 @@ public class LanguageManager : MonoBehaviour
 	}
 	private void TryDoDefend( int _Index )
 	{
+		int actuallyIndexFromAnswer = m_DefendRandomMapper[ _Index ] ;
+		Debug.Log("_Index=" + _Index + " actuallyIndexFromAnswer=" +actuallyIndexFromAnswer);
 		if (m_State != LanguageUIState.LanguageUIState_WaitPlayer )
 		{
 			return ;
 		}
 		if( m_BattlePlay )
 		{
-			float ratio = m_AttackQuestion.CalculateRatioOfIndex( _Index ) ;
+			float ratio = m_DefendQuestion.CalculateRatioOfIndex( actuallyIndexFromAnswer ) ;
 			m_BattlePlay.Defend( ratio  * 2 ) ;
 		}
 		m_State = LanguageUIState.LanguageUIState_WaitBattlePlay ;
@@ -93,6 +95,11 @@ public class LanguageManager : MonoBehaviour
 	void Start () {
 		// m_BattlePlay = this.GetComponent<DummyBattlePlay>() ;
 		m_Server = this.GetComponent<DummyServerRequester>() ;
+
+		for( int i = 0 ; i < m_DefendRandomMapper.Length ; ++i )
+		{
+			m_DefendRandomMapper[ i ] = i ;
+		}
 	
 	}
 	
@@ -175,11 +182,18 @@ public class LanguageManager : MonoBehaviour
 		this.m_AttackInputField.text = "" ;
 		m_DefendQuestionLabel.text = this.m_DefendQuestion.QuestionString ;
 
-		for( int i = 0 ;  i < m_DenfendButtonText.Length ; ++i )
+		RandomizeMapper() ;
+
+		int actuallyIndexFromAnswer = 0 ;
+		for( int i = 0 ;  i < m_DenfendButtonText.Length && i < m_DefendRandomMapper.Length ; ++i )
 		{
+
+			actuallyIndexFromAnswer = m_DefendRandomMapper[ i ] ;
+			Debug.Log("button i=" + i + " actuallyIndexFromAnswer=" + actuallyIndexFromAnswer );
+
 			if( i < this.m_DefendQuestion.m_Answers.Count )
 			{
-				m_DenfendButtonText[i].text = m_DefendQuestion.m_Answers[ i ].AnswerString ;
+				m_DenfendButtonText[ i ].text = m_DefendQuestion.m_Answers[ actuallyIndexFromAnswer ].AnswerString ;
 			}
 			else
 			{
@@ -218,5 +232,23 @@ public class LanguageManager : MonoBehaviour
 	private void Process_WaitRequestAddAnswer()
 	{
 		m_State = LanguageUIState.LanguageUIState_WaitBattlePlay ;
+	}
+
+	private void RandomizeMapper()
+	{
+		int randomMax = 10 ;
+		int rangeMax = this.m_DefendRandomMapper.Length ;
+		int index1 ;
+		int index2 ;
+		int tmp ;
+		for( int i = 0 ; i < randomMax ; ++i )
+		{
+			index1 = Random.Range( 0 , rangeMax ) ;
+			index2 = Random.Range( 0 , rangeMax ) ;
+
+			tmp = m_DefendRandomMapper[ index1 ] ;
+			m_DefendRandomMapper[ index1 ] = m_DefendRandomMapper[ index2 ] ;
+			m_DefendRandomMapper[ index2 ] = tmp ;
+		}
 	}
 }
