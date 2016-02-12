@@ -25,3 +25,5 @@
 
 /Client/Temp
 /Publish
+/Client/.vs/Client/v14/*.suo
+/Client/obj
