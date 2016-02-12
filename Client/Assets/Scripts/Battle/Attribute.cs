@@ -10,7 +10,17 @@ public class Attribute {
     {
         get { return m_Value; }
     }
-         
+
+    public int min
+    {
+        get { return m_MinValue; }
+    }
+
+    public int max
+    {
+        get { return m_MaxValue; }
+    }
+
     public int randomOneValue
     {
         get { return Random.Range(m_MinValue, m_MaxValue); }
@@ -39,4 +49,7 @@ public class Attribute {
         m_Value += _OffsetValue;
         m_Value = Mathf.Min(Mathf.Max(m_Value, m_MinValue), m_MaxValue);
     }
+
+    public void ToMin() { m_Value = m_MinValue; }
+    public void ToMax() { m_Value = m_MaxValue; }
 }

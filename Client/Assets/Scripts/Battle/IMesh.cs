@@ -43,10 +43,11 @@ public class IMesh  {
                 Vector3 localScale = _Root.transform.localScale;
 
                 obj.transform.parent = _Root.transform;
-                obj.transform.position = new Vector3(
-                    localScale.x * (i % m_nSize - m_nSize / 2),
-                    localScale.y * (m_nSize / 2 - i / m_nSize), 
-                    0);
+                obj.transform.position = _Root.transform.position
+                    + new Vector3(
+                        localScale.x * (i % m_nSize - m_nSize / 2),
+                        localScale.y * (m_nSize / 2 - i / m_nSize), 
+                        0);
 
                 // use Sprites-Default material
 #if VERTEX_COLOR_256 || VERTEX_COLOR_8

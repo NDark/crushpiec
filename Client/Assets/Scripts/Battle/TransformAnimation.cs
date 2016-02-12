@@ -1,40 +1,59 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TransformAnimation : MonoBehaviour {
-    public enum AnimationState
-    {
-        Idle,
-        Attack,
-        Attack_Start,
-        Attack_DoAttack,
-        Attack_End,
-        Hitted,
-        Defend,
+public enum AnimationState
+{
+    Idle,
+    Attack,
+    Attack_Start,
+    Attack_DoAttack,
+    Attack_End,
+    Hitted,
+    Defend,
 
-        InValid,
-    }
+    InValid
+}
+
+public class TransformAnimation : MonoBehaviour {
+    public class Define {
+        static public float TIME_IDLE = 5.0f;
+        static public float TIME_ATTACK_START = 0.1f;
+        static public float TIME_ATTACK_DO = 0.025f;
+        static public float TIME_ATTACK_END = 0.1f;
+        static public float TIME_HITTED = 0.25f;
+
+        static public float TIME_ATTACK = TIME_ATTACK_START + TIME_ATTACK_DO + TIME_ATTACK_END/2.0f;
+    };
 
     AnimationState m_State = AnimationState.InValid;
+    AnimationState m_NextState = AnimationState.InValid;
     GameObject m_RootRef = null;
     float m_ElapsedTime = 0.0f;
     float m_ScaleFactor = 1.0f;
     Vector3 m_PositionRef = Vector3.zero;
     TransformCache m_TransformRef;
-    /// 
-    float CONST_TIME_IDLE = 5.0f;
-    float CONST_TIME_ATTACK_START = 1.0f;
-    float CONST_TIME_ATTACK_DOATTACK = 1.0f;
-    float CONST_TIME_ATTACK_END = 1.0f;
-    /// 
 
-    public void DoAttack() {
-        m_State = AnimationState.Attack;
+    IEnumerator PerformChangeAnimationState(AnimationState _State, float _DelayTime, bool _RestoreTransform)
+    {
+        yield return new WaitForSeconds(_DelayTime);
+
+        // perform change
+        m_State = _State;
+        m_NextState = AnimationState.InValid;
         m_ElapsedTime = 0.0f;
+
+        if (_RestoreTransform)
+        {
+            m_TransformRef.Restore();
+        }
     }
 
-    void DoRestore() {
-        m_TransformRef.Restore();
+    public void ChangeAnimationState(AnimationState _NextState, float _DelayTime, bool _RestoreTransform = false)
+    {
+        if (m_NextState != _NextState) {
+            m_NextState = _NextState;
+            StartCoroutine(PerformChangeAnimationState(_NextState, _DelayTime, _RestoreTransform));
+        }
     }
 
     // Use this for initialization
@@ -54,12 +73,12 @@ public class TransformAnimation : MonoBehaviour {
         switch (m_State)
         {
             case AnimationState.Idle:
-                m_PositionRef.y = 1.0f * Mathf.Sin(CONST_TIME_IDLE * m_ElapsedTime);
+                m_PositionRef.y = 1.0f * Mathf.Sin(Define.TIME_IDLE * m_ElapsedTime);
                 m_RootRef.transform.position = m_PositionRef;
                 break;
 
             case AnimationState.Attack:
-                float ratio = Mathf.Min(m_ElapsedTime / CONST_TIME_ATTACK_START, 1.0f);
+                float ratio = Mathf.Min(m_ElapsedTime / Define.TIME_ATTACK_START, 1.0f);
                 float targetRot = -m_ScaleFactor * 30.0f * ratio;
                 float targetScale = 1.0f + 1.0f * ratio;
                 m_RootRef.transform.rotation = Quaternion.AngleAxis(targetRot, Vector3.up);
@@ -67,33 +86,28 @@ public class TransformAnimation : MonoBehaviour {
                 m_PositionRef.z = -5.0f * ratio;
                 m_RootRef.transform.position = m_PositionRef;
 
-                if (m_ElapsedTime > CONST_TIME_ATTACK_START)
-                {
-                    m_ElapsedTime = 0.0f;
-                    m_State = AnimationState.Attack_DoAttack;
-                }
+                ChangeAnimationState(AnimationState.Attack_DoAttack, Define.TIME_ATTACK_START);                
                 break;
 
             case AnimationState.Attack_DoAttack:
-                float attackRatio = Mathf.Min(m_ElapsedTime / CONST_TIME_ATTACK_DOATTACK, 1.0f);
-                m_PositionRef.x = m_ScaleFactor * attackRatio * 6.0f;
+                float attackRatio = Mathf.Min(m_ElapsedTime / Define.TIME_ATTACK_DO, 1.0f);
+                m_PositionRef.x = m_ScaleFactor * attackRatio * 1.0f;
                 m_RootRef.transform.position = m_PositionRef;
-                if (m_ElapsedTime > CONST_TIME_ATTACK_DOATTACK)
-                {
-                    m_State = AnimationState.Attack_End;
-                }
+                
+                ChangeAnimationState(AnimationState.Attack_End, Define.TIME_ATTACK_DO);
                 break;
 
             case AnimationState.Attack_End:
-                if (m_ElapsedTime > CONST_TIME_ATTACK_END)
-                {
-                    DoRestore();
-
-                    m_State = AnimationState.Idle;
-                }
+                ChangeAnimationState(AnimationState.Idle, Define.TIME_ATTACK_END, true);
                 break;
 
             case AnimationState.Hitted:
+                m_PositionRef = m_TransformRef.m_PositionRef;
+                m_PositionRef.x += 1.0f * Random.Range(-1.0f, 1.0f);
+                m_PositionRef.y += 1.0f * Random.Range(-1.0f, 1.0f);
+                m_RootRef.transform.position = m_PositionRef;
+                
+                ChangeAnimationState(AnimationState.Idle, Define.TIME_HITTED, true);
                 break;
 
             case AnimationState.Defend:

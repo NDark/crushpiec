@@ -4,9 +4,10 @@ using System.Collections;
 public class Character : MonoBehaviour {
     IMesh m_ShareMeshData = null;
     UnitData m_ShareUnitData = null;
+    TransformAnimation m_ShareAnimation = null;
+
     static MeshCreator s_ShareMeshCreator = GlobalSingleton.GetMeshCreator();
     public string m_MeshName = "Unit_1";
-    public Vector3 m_TransformOffset = Vector3.zero;
 
     public UnitData data {
         get { return m_ShareUnitData; }
@@ -21,19 +22,21 @@ public class Character : MonoBehaviour {
         if (m_ShareMeshData != null) {
             m_ShareMeshData.Draw(this.gameObject);
         }
-
-        this.transform.position += m_TransformOffset;
     }
 
-    public void DoAction() {
-
+    public void DoAction(AnimationState _State, float _Delay = 0.0f) {
+        m_ShareAnimation.ChangeAnimationState(_State, _Delay);
     }
-
+    
     // Use this for initialization
     void Start () {
 
         if (m_ShareUnitData == null) {
             GlobalSingleton.GetDataManager().GetUnitData(m_MeshName, ref m_ShareUnitData);
+        }
+
+        if (m_ShareAnimation == null) {
+            m_ShareAnimation = GetComponent<TransformAnimation>();
         }
     }
 	
