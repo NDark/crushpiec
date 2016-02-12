@@ -3,6 +3,7 @@
 *.sln
 *.userprefs
 *.unityproj
+.DS_Store
 
 /Client/Library/*.log
 /Client/Library/AssetServerCacheV3
@@ -14,4 +15,6 @@
 /Client/Library/ScriptAssemblies
 /Client/Library/ShaderCache
 /Client/Library/metadata
+/Client/Library/CurrentMaximizeLayout.dwlt
 /Client/Temp
+/Publish
