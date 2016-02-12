@@ -91,7 +91,7 @@ public class LanguageManager : MonoBehaviour
 
 	// Use this for initialization
 	void Start () {
-		m_BattlePlay = this.GetComponent<DummyBattlePlay>() ;
+		// m_BattlePlay = this.GetComponent<DummyBattlePlay>() ;
 		m_Server = this.GetComponent<DummyServerRequester>() ;
 	
 	}
@@ -141,8 +141,12 @@ public class LanguageManager : MonoBehaviour
 
 	private void Process_StartInitialize()
 	{
-		this.m_Server.RequestQuestions() ;
-		m_State = LanguageUIState.LanguageUIState_WaitInitialize ;
+		if( null != m_Server )
+		{
+			this.m_Server.RequestQuestions() ;
+			m_State = LanguageUIState.LanguageUIState_WaitInitialize ;
+		}
+
 	}
 
 	private void Process_WaitInitialize()

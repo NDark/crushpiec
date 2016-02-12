@@ -171,7 +171,7 @@ public class DummyServerRequester : MonoBehaviour
 		list.Add( new AnswerChoice( "通告" , 2 ) ) ;
 		list.Add( new AnswerChoice( "發表" , 1 ) ) ;
 		m_Questions.Add( new QuestionAndAnswers( ++id , "Announce" , list ) ) ;
-		/*
+
 		list = new List<AnswerChoice>() ;
 		list.Add( new AnswerChoice( "Police killed a man." , 60 ) ) ;
 		list.Add( new AnswerChoice( "police kill person" , 30 ) ) ;
@@ -185,7 +185,7 @@ public class DummyServerRequester : MonoBehaviour
 		list.Add( new AnswerChoice( "全球股份市場" , 10 ) ) ;
 		list.Add( new AnswerChoice( "全球儲積市場" , 5 ) ) ;
 		m_Questions.Add( new QuestionAndAnswers( ++id , "global stock market" , list ) ) ;
-*/
+
 
 
 
