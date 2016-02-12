@@ -19,6 +19,9 @@
 /Client/Library/expandedItems
 /Client/Library/CrashedAssetImports.txt
 /Client/Library/InspectorExpandedItems.asset
+/Client/Library/AssetVersioning.db
+/Client/Library/ShaderCache.db
+/Client/Library/AssetImportState
 
 /Client/Temp
 /Publish
