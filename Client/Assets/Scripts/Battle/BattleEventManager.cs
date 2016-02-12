@@ -6,6 +6,7 @@ public enum GameState
     Initization,
     Idle,
     WaitForInput,
+    ActionInAnimation,
     ActionForCharacter,
     ActionForMonster,
     ValidateVictory,
@@ -14,7 +15,9 @@ public enum GameState
     InValid,
 }
 public class BattleEventManager : DummyBattlePlay {
-    private static GameState m_State = GameState.InValid;
+    static GameState m_State = GameState.InValid;
+    Character m_CharacterRef = null;
+    Character m_MonsterRef = null;
 
     // override interface
     public override bool IsInAnimation() 
@@ -38,18 +41,19 @@ public class BattleEventManager : DummyBattlePlay {
 
     // Use this for initialization
     void Start () {
+        m_CharacterRef = GameObject.Find("Unit_Character").GetComponent<Character>();
+        m_MonsterRef = GameObject.Find("Unit_Monster").GetComponent<Character>();
+
         m_State = GameState.Initization;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update () {
         switch (m_State)
         {
             case GameState.Initization:
-                GameObject objCharacter = GameObject.Find("Unit_Character");
-                objCharacter.GetComponent<Character>().DoRender();
-                GameObject objMonster = GameObject.Find("Unit_Monster");
-                objMonster.GetComponent<Character>().DoRender();
+                m_CharacterRef.DoRender();
+                m_MonsterRef.DoRender();
 
                 m_State = GameState.Idle;
                 break;
@@ -63,12 +67,15 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForCharacter:
                 GlobalSingleton.DEBUG("ActionForCharacter");
-                m_State = GameState.ActionForMonster;
+                Invoke("OnActionForCharacterFinish", 3.0f);
+                m_CharacterRef.GetComponent<TransformAnimation>().DoAttack();
+                m_State = GameState.ActionInAnimation;
                 break;
 
             case GameState.ActionForMonster:
                 GlobalSingleton.DEBUG("ActionForMonster");
-                m_State = GameState.ValidateVictory;
+                Invoke("OnActionForMonsterFinish", 3.0f);
+                m_State = GameState.ActionInAnimation;
                 break;
 
             case GameState.ValidateVictory:
@@ -83,4 +90,7 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
         } // End for switch
 	}
+
+    void OnActionForCharacterFinish() { m_State = GameState.ActionForMonster; }
+    void OnActionForMonsterFinish() { m_State = GameState.ValidateVictory; }
 }

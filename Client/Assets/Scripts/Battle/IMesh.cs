@@ -1,5 +1,6 @@
-﻿// #define VERTEX_COLOR_256
+﻿#define VERTEX_COLOR_256
 // #define VERTEX_COLOR_8
+#define GRAY_SCALE_COLOR
 
 using UnityEngine;
 using System.Collections;
@@ -11,16 +12,18 @@ public class IMesh  {
 
     public string m_SourceStr;
     public string m_Name;
-    public int m_InstanceId;
+    public int m_nSize = s_nSize;
+    public int m_InstanceID;
     public int[] m_Vertices;
 
     // copy
     public IMesh(IMesh _CopyMesh) {
         m_SourceStr = _CopyMesh.m_SourceStr;
         m_Name = _CopyMesh.m_Name;
-        m_InstanceId = _CopyMesh.m_InstanceId;
+        m_nSize = _CopyMesh.m_nSize;
+        m_InstanceID = _CopyMesh.m_InstanceID;
         m_Vertices = new int[_CopyMesh.m_Vertices.Length];
-
+        
         System.Array.Copy(_CopyMesh.m_Vertices, m_Vertices, _CopyMesh.m_Vertices.Length);
     }
 
@@ -29,6 +32,8 @@ public class IMesh  {
     }
 
     public void Draw(GameObject _Root) {
+        GlobalSingleton.DEBUG("Draw, size = " + m_nSize + ", sizeof vertices = " + m_Vertices.Length);
+
         for (int i = 0 ; i < m_Vertices.Length ; ++i)
         {
             int voxel = m_Vertices[i];
@@ -39,10 +44,10 @@ public class IMesh  {
 
                 obj.transform.parent = _Root.transform;
                 obj.transform.position = new Vector3(
-                    localScale.x * (i % s_nSize - s_nSize / 2),
-                    localScale.y * (s_nSize / 2 - i / s_nSize), 
+                    localScale.x * (i % m_nSize - m_nSize / 2),
+                    localScale.y * (m_nSize / 2 - i / m_nSize), 
                     0);
-                 
+
                 // use Sprites-Default material
 #if VERTEX_COLOR_256 || VERTEX_COLOR_8
                 MeshFilter cube = obj.GetComponent<MeshFilter>();
@@ -51,10 +56,18 @@ public class IMesh  {
                 int colorScale = 256;
 #elif VERTEX_COLOR_8
                 int colorScale = 8;
+
 #endif
-                float vertexColor = (voxel % colorScale) / (float)colorScale;
+#if GRAY_SCALE_COLOR
+                float grayScale = (voxel % colorScale) / (float)colorScale;
+                float r = grayScale, g = grayScale, b = grayScale;
+#else
+                float r = (voxel % colorScale) / (float)colorScale;
+                float g = (voxel % colorScale) / (float)colorScale;
+                float b = (voxel % colorScale) / (float)colorScale;  
+#endif   
                 Color[] colors = Enumerable.Repeat(
-                    new Color(vertexColor, vertexColor, vertexColor, 1.0f),
+                    new Color(r, g, b, 1.0f),
                     vertices.Length).ToArray();
                 cube.mesh.colors = colors;
 #endif
@@ -74,6 +87,10 @@ public class IMesh  {
             if (element[0] == "name")
             {
                 m_Name = element[1];
+            }
+            else if (element[0] == "size")
+            {
+                int.TryParse(element[1], out m_nSize);
             }
             else if (element[0] == "vertices")
             {

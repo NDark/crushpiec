@@ -20,4 +20,14 @@ public static class GlobalSingleton
         }
         return m_MeshCreator;
     }
+
+    private static DataManager m_DataManager = null;
+    public static DataManager GetDataManager()
+    {
+        if (null == m_DataManager)
+        {
+            m_DataManager = new DataManager();
+        }
+        return m_DataManager;
+    }
 }

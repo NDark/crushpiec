@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class MeshCreator {
     static private string s_Path = "Battle/Datas/";
-    static private string s_Ext = ".txt";
+    // static private string s_Ext = ".txt";
     static private int s_UniqueInstanceID = 0;
     Dictionary<string, IMesh> m_MeshTemplateContainer = new Dictionary<string, IMesh>();
     Dictionary<int, IMesh> m_MeshInstanceContainer = new Dictionary<int, IMesh>();
@@ -19,14 +19,14 @@ public class MeshCreator {
         }
 
         IMesh meshInstance = new IMesh(m_MeshTemplateContainer[meshname]);
-        meshInstance.m_InstanceId = s_UniqueInstanceID++;
-        m_MeshInstanceContainer.Add(meshInstance.m_InstanceId, meshInstance);
+        meshInstance.m_InstanceID = s_UniqueInstanceID++;
+        m_MeshInstanceContainer.Add(meshInstance.m_InstanceID, meshInstance);
         return meshInstance;
     }
 
     public void DestroyMesh(ref IMesh _OutMesh) {
-        if (m_MeshInstanceContainer.ContainsKey(_OutMesh.m_InstanceId)) {
-            m_MeshInstanceContainer.Remove(_OutMesh.m_InstanceId);
+        if (m_MeshInstanceContainer.ContainsKey(_OutMesh.m_InstanceID)) {
+            m_MeshInstanceContainer.Remove(_OutMesh.m_InstanceID);
 
             _OutMesh = null;
         }
