@@ -13,8 +13,28 @@ public enum GameState
 
     InValid,
 }
-public class BattleEventManager : MonoBehaviour {
+public class BattleEventManager : DummyBattlePlay {
     private static GameState m_State = GameState.InValid;
+
+    // override interface
+    public override bool IsInAnimation() 
+    {
+        return (m_State > GameState.WaitForInput && m_State < GameState.RequestNext);
+    }
+
+    public override void Attack(float _Ratio)
+    {
+        base.Attack(_Ratio);
+
+        m_State = GameState.ActionForCharacter;
+    }
+
+    public override void Defend(float _Ratio)
+    {
+        base.Defend(_Ratio);
+
+        m_State = GameState.ActionForCharacter;
+    }
 
     // Use this for initialization
     void Start () {
@@ -58,6 +78,8 @@ public class BattleEventManager : MonoBehaviour {
                 break;
 
             case GameState.RequestNext:
+                GlobalSingleton.DEBUG("RequestNext");
+                m_State = GameState.Idle;
                 break;
         } // End for switch
 	}
