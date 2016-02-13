@@ -350,10 +350,84 @@ public class DummyServerRequester : MonoBehaviour
 		list.Add( new AnswerChoice( "one oxgen with carbon" , 1 ) ) ;
 		m_Questions.Add( new QuestionAndAnswers( ++id , "一氧化碳" , list ) ) ;
 
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "map" , 60 ) ) ;
+		list.Add( new AnswerChoice( "mmm" , 3 ) ) ;
+		list.Add( new AnswerChoice( "ttt" , 2 ) ) ;
+		list.Add( new AnswerChoice( "a123" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "地圖" , list ) ) ;
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "apple" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "蘋果" , list ) ) ;
 
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "banana" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "香蕉" , list ) ) ;
 
-
-
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "cat" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "貓" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "duck" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "鴨子" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "eagle" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "老鷹" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "fox" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "狐狸" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "garbage" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "垃圾" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "house" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "房子" , list ) ) ;
+		
+		
+		list = new List<AnswerChoice>() ;
+		list.Add( new AnswerChoice( "juice" , 60 ) ) ;
+		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
+		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
+		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "果汁" , list ) ) ;
+		
 
 
 	}
