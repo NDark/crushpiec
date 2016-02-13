@@ -4,39 +4,40 @@ using System.Collections;
 public class KeyboardDetect : MonoBehaviour {
 
 	public UnityEngine.UI.Text m_Text = null ;
-	TouchScreenKeyboard keyboard = null ;
+
 	// Use this for initialization
 	void Start () {
-		keyboard = TouchScreenKeyboard.Open("", TouchScreenKeyboardType.Default);
+
 	}
 
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		/*
-		if ( null != keyboard && 
-		    keyboard.text != null && keyboard.done)
-		{
-			print ("User input is: " + keyboard.text);
 
-		}
-*/
-		if( null != m_Text )
-		{
-			Event e = Event.current;
+	}
 
+	void OnFocus()
+	{
+		Debug.Log("OnFocus");
+		m_Text.text = "OnFocus" ;
+	}
 
-			if( null != e )
-			{
-				if (e.type == EventType.keyDown && e.keyCode == KeyCode.Return)
-					//Put in what you want here
-				{
-					
-				}
-				print ("null != e" );
-				m_Text.text = e.type.ToString() ;
-			}
-		}
+	void OnDeselect( UnityEngine.EventSystems.BaseEventData eventData)
+	{
+		Debug.Log("OnDeselect");
+		m_Text.text = "OnDeselect" ;
+	}
+
+	public void OnPointerClick(UnityEngine.EventSystems.PointerEventData eventData)
+	{
+		Debug.Log("OnPointerClick");
+		m_Text.text = "OnPointerClick" ;
+	}
+
+	public void OnSubmit(UnityEngine.EventSystems.BaseEventData eventData)
+	{
+		Debug.Log("OnSubmit");
+		m_Text.text = "OnSubmit" ;
 	}
 }
