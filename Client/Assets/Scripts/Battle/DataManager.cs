@@ -14,9 +14,9 @@ public class DataManager {
         if (!m_DataTemplateContainer.ContainsKey(_TypeName))
         {
             UnitData data = new UnitData();
-            data.m_HP.Set(100, 0);
-            data.m_ATK.Set(8, 2);
-            data.m_DEF.Set(2, 2);
+            data.m_HP.Set(10, 0);
+            data.m_ATK.Set(12,8);
+            data.m_DEF.Set(1, 1);
 
             m_DataTemplateContainer.Add(_TypeName, data);            
         }
