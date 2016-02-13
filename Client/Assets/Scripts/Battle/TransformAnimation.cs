@@ -23,6 +23,7 @@ public class TransformAnimation : MonoBehaviour {
         static public float TIME_ATTACK_DO = 0.05f;
         static public float TIME_ATTACK_END = 0.1f;
         static public float TIME_HITTED = 0.1f;
+        static public float TIME_DEFEND = 0.2f;
         static public float TIME_SKIPED = 0.0f;
 
         static public float TIME_ATTACK = TIME_ATTACK_START + TIME_ATTACK_DO + TIME_ATTACK_END/2.0f;
@@ -128,6 +129,8 @@ public class TransformAnimation : MonoBehaviour {
                 break;
 
             case AnimationState.Defend:
+                GlobalSingleton.GetFxManager().DoDefendAnimation();
+                ChangeAnimationState(AnimationState.Idle, Define.TIME_DEFEND, true);
                 break;
         }
     }

@@ -6,6 +6,20 @@ public class FxManager : MonoBehaviour {
     List<GameObject> m_DummyPoints = new List<GameObject>();
     static int s_DummyCacheSize = 5;
     static int s_DummyIndex = 0;
+    public GameObject m_Shield = null;
+    public void DoDefendAnimation() { 
+        if (m_Shield != null) {
+            m_Shield.SetActive(true);
+        }
+        Invoke("OnFinishShieldAnimation", 1.5f);
+    }
+
+    void OnFinishShieldAnimation()
+    {
+        if (m_Shield != null) {
+            m_Shield.SetActive(false);
+        }
+    }
 
     public void DoBreakBoneAnimation(
         ref Character _CharacterRef, 

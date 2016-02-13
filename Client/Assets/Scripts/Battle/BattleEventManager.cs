@@ -8,7 +8,8 @@ public enum GameState
     Idle,
     WaitForInput,
     WaitForAnimation,
-    ActionForCharacter,
+    ActionForCharacterAttack,
+    ActionForCharacterDefend,
     ActionForMonster,
     ValidateVictory,
     Win,
@@ -22,6 +23,7 @@ public class BattleEventManager : DummyBattlePlay {
     static GameState m_State = GameState.InValid;
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
+    public int m_SeedMax = 8;
 
     static int s_WaitTurnForMonsterMax = 2;
     int m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
@@ -36,14 +38,14 @@ public class BattleEventManager : DummyBattlePlay {
     {
         base.Attack(_Ratio);
         DoAttck(ref m_CharacterRef, ref m_MonsterRef, _Ratio);
-        m_State = GameState.ActionForCharacter;
+        m_State = GameState.ActionForCharacterAttack;
     }
 
     public override void Defend(float _Ratio)
     {
         base.Defend(_Ratio);
         DoDefend(ref m_CharacterRef, _Ratio);
-        m_State = GameState.ActionForCharacter;
+        m_State = GameState.ActionForCharacterDefend;
     }
 
     void DoAttck(ref Character _Hitter, ref Character _Receiver, float _Ratio)
@@ -77,6 +79,17 @@ public class BattleEventManager : DummyBattlePlay {
         }
     }
 
+    void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
+    {
+        if (_Random) {
+            _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
+        }
+
+        // re-create
+        _CharacterRef.ReCreate();
+        _CharacterRef.DoUpdateHP();
+    }
+
     // Use this for initialization
     void Start () {
         m_CharacterRef = GameObject.Find("Unit_Character").GetComponent<Character>();
@@ -90,20 +103,13 @@ public class BattleEventManager : DummyBattlePlay {
         switch (m_State)
         {
             case GameState.Initization:
-                m_CharacterRef.ReCreate();
-                m_MonsterRef.ReCreate();
-                m_CharacterRef.DoUpdateHP();
-                m_MonsterRef.DoUpdateHP();
-
+                DoCreateOneCharacter(ref m_CharacterRef, false);
+                DoCreateOneCharacter(ref m_MonsterRef);
                 m_State = GameState.Idle;
                 break;
 
             case GameState.NextBattle:
-                // re-create monster
-                int seed = Random.Range(1, 7);
-                m_MonsterRef.m_MeshName = "Unit_" + seed;
-                m_MonsterRef.ReCreate();
-                m_MonsterRef.DoUpdateHP();
+                DoCreateOneCharacter(ref m_MonsterRef);
                 m_State = GameState.Idle;
                 break;
 
@@ -114,17 +120,23 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.WaitForInput:
                 break;
 
-            case GameState.ActionForCharacter:
-                GlobalSingleton.DEBUG("ActionForCharacter");
-
+            case GameState.ActionForCharacterAttack:
+                GlobalSingleton.DEBUG("ActionForCharacterAttack");
                 m_CharacterRef.DoAction(AnimationState.Attack);
                 m_MonsterRef.DoAction(AnimationState.Hitted, TransformAnimation.Define.TIME_ATTACK);
-
                 Invoke("OnActionForCharacterFinish", 1.0f);
 
                 m_State = GameState.WaitForAnimation;
                 break;
 
+            case GameState.ActionForCharacterDefend:
+                GlobalSingleton.DEBUG("ActionForCharacterDefend");
+                m_CharacterRef.DoAction(AnimationState.Defend);
+                Invoke("OnActionForCharacterFinish", 1.0f);
+
+                m_State = GameState.WaitForAnimation;
+                break;
+                
             case GameState.ActionForMonster:
                 GlobalSingleton.DEBUG("ActionForMonster");
 
