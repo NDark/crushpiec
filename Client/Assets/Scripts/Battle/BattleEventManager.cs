@@ -91,7 +91,7 @@ public class BattleEventManager : DummyBattlePlay {
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
     {
         if (_Random) {
-            //_CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
+            _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
         }
 
         // re-create
