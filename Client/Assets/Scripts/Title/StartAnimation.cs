@@ -3,7 +3,6 @@ using System.Collections;
 
 public class StartAnimation : MonoBehaviour 
 {
-	public Animator m_PressAnyKeyAnimator = null ;
 	public Animator [] m_Animators = null ;
 	public Animation [] m_Animations = null ;
 
@@ -17,12 +16,7 @@ public class StartAnimation : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		if( null != m_PressAnyKeyAnimator )
-		{
-			m_PressAnyKeyAnimator.enabled = true ;
-			m_PressAnyKeyAnimator = null ;
-		}
-		
+
 		if( null != m_Animators )
 		{
 			foreach( Animator anim in m_Animators )
