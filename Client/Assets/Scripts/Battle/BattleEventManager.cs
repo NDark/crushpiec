@@ -198,7 +198,7 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.Lose:
                 GlobalSingleton.DEBUG("Lose");
-                DoPlayAnimation("Lose", "Language_Victory_Show");
+                DoPlayAnimation("Lose", "Language_Lose_Show");
                 Invoke("OnLoseAnimationFinish", 1.0f);
                 m_State = GameState.WaitForAnimation;
                 break;
