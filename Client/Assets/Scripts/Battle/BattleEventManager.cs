@@ -79,10 +79,19 @@ public class BattleEventManager : DummyBattlePlay {
         }
     }
 
+    void DoUpdateCountDown()
+    {
+        GameObject coountDown = GameObject.Find("CountDownText");
+        if (coountDown != null) {
+            string cdStr = "CD " + (m_WaitTurnForMonsterAttack + 1);
+            coountDown.GetComponent<UnityEngine.UI.Text>().text = cdStr;
+        }
+    }
+
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
     {
         if (_Random) {
-            _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
+            //_CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
         }
 
         // re-create
@@ -105,11 +114,13 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.Initization:
                 DoCreateOneCharacter(ref m_CharacterRef, false);
                 DoCreateOneCharacter(ref m_MonsterRef);
+                DoUpdateCountDown();
                 m_State = GameState.Idle;
                 break;
 
             case GameState.NextBattle:
                 DoCreateOneCharacter(ref m_MonsterRef);
+                DoUpdateCountDown();
                 m_State = GameState.Idle;
                 break;
 
@@ -205,6 +216,7 @@ public class BattleEventManager : DummyBattlePlay {
     }
 
     void OnActionForMonsterFinish() {
+        DoUpdateCountDown();
         m_CharacterRef.DoUpdateHP();
         m_State = GameState.ValidateVictory;
     }
