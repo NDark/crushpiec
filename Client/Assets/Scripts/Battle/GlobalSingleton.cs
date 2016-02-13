@@ -30,4 +30,17 @@ public static class GlobalSingleton
         }
         return m_DataManager;
     }
+
+    private static FxManager m_FxManager = null;
+    public static FxManager GetFxManager()
+    {
+        if (null == m_FxManager)
+        {
+            GameObject obj = GameObject.Find("FxManager");
+            if (obj != null) {
+                m_FxManager = obj.GetComponent<FxManager>();
+            }
+        }
+        return m_FxManager;
+    }
 }
