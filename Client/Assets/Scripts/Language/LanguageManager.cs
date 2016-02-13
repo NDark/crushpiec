@@ -33,6 +33,7 @@ public class LanguageManager : MonoBehaviour
 
 	public QuestionAndAnswers m_AttackQuestion = null ;
 	public QuestionAndAnswers m_DefendQuestion = null ;
+	public Animation m_StartActionAnimaton = null ;
 
 	public void TryDoAttack()
 	{
@@ -51,6 +52,7 @@ public class LanguageManager : MonoBehaviour
 				float ratio = m_AttackQuestion.TryCalculateRatioOfAnAnswer( stringFromInput ) ;
 				m_BattlePlay.Attack( ratio * 2 ) ;
 			}
+			StartActionAnimation( false ) ;
 			m_State = LanguageUIState.LanguageUIState_StartRequestAddAnswer ;
 		}
 	}
@@ -87,6 +89,7 @@ public class LanguageManager : MonoBehaviour
 			float ratio = m_DefendQuestion.CalculateRatioOfIndex( actuallyIndexFromAnswer ) ;
 			m_BattlePlay.Defend( ratio  * 2 ) ;
 		}
+		StartActionAnimation( false ) ;
 		m_State = LanguageUIState.LanguageUIState_WaitBattlePlay ;
 	}
 
@@ -201,6 +204,7 @@ public class LanguageManager : MonoBehaviour
 			}
 		}
 
+		StartActionAnimation( true ) ;
 		m_State = LanguageUIState.LanguageUIState_WaitPlayer ;
 	}
 
@@ -249,6 +253,23 @@ public class LanguageManager : MonoBehaviour
 			tmp = m_DefendRandomMapper[ index1 ] ;
 			m_DefendRandomMapper[ index1 ] = m_DefendRandomMapper[ index2 ] ;
 			m_DefendRandomMapper[ index2 ] = tmp ;
+		}
+	}
+
+	private void StartActionAnimation( bool _Show ) 
+	{
+		if( null == m_StartActionAnimaton )
+		{
+			return ;
+		}
+
+		if( true == _Show )
+		{
+			m_StartActionAnimaton.Play( "Language_StartAction_Show" ) ;
+		}
+		else
+		{
+			m_StartActionAnimaton.Play( "Language_StartAction_Hide" ) ;
 		}
 	}
 }
