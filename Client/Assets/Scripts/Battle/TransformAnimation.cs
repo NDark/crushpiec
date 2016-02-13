@@ -9,6 +9,8 @@ public enum AnimationState
     Attack_DoAttack,
     Attack_End,
     Hitted,
+    Hitted_BreakBone,
+    Hitted_Straight,
     Defend,
 
     InValid
@@ -21,6 +23,7 @@ public class TransformAnimation : MonoBehaviour {
         static public float TIME_ATTACK_DO = 0.05f;
         static public float TIME_ATTACK_END = 0.1f;
         static public float TIME_HITTED = 0.1f;
+        static public float TIME_SKIPED = 0.0f;
 
         static public float TIME_ATTACK = TIME_ATTACK_START + TIME_ATTACK_DO + TIME_ATTACK_END/2.0f;
     };
@@ -106,11 +109,21 @@ public class TransformAnimation : MonoBehaviour {
                 m_PositionRef.x += 2.0f * Random.Range(-1.0f, 1.0f);
                 m_PositionRef.y += 2.0f * Random.Range(-1.0f, 1.0f);
                 m_RootRef.transform.position = m_PositionRef;
+                ChangeAnimationState(AnimationState.Hitted_BreakBone, Define.TIME_SKIPED);
+                break;
 
+            case AnimationState.Hitted_BreakBone:
                 // bone animation
                 Character selfRef = GetComponent<Character>();
                 GlobalSingleton.GetFxManager().DoBreakBoneAnimation(ref selfRef);
+                ChangeAnimationState(AnimationState.Hitted_Straight, Define.TIME_SKIPED);
+                break;
 
+            case AnimationState.Hitted_Straight:
+                m_PositionRef = m_TransformRef.m_PositionRef;
+                m_PositionRef.x += 2.0f * Random.Range(-1.0f, 1.0f);
+                m_PositionRef.y += 2.0f * Random.Range(-1.0f, 1.0f);
+                m_RootRef.transform.position = m_PositionRef;
                 ChangeAnimationState(AnimationState.Idle, Define.TIME_HITTED, true);
                 break;
 

@@ -48,12 +48,15 @@ public class BattleEventManager : DummyBattlePlay {
 
     void DoAttck(ref Character _Hitter, ref Character _Receiver, float _Ratio)
     {
-        int atk = (int)(_Hitter.atk.randomOneValue * _Ratio * 100.0f);
+        int atk = (int)(_Hitter.atk.randomOneValue * _Ratio);
         int def = _Receiver.def.value;
 
         GlobalSingleton.DEBUG("DoAttck atk = " + atk + ",def = " + def);
 
-        _Receiver.hp.Offset(def - atk);
+        // min damage at least 1
+        int damage = Mathf.Max(1, atk - def);
+
+        _Receiver.hp.Offset(-damage);
         _Receiver.def.ToMin();
     }
 
@@ -61,6 +64,17 @@ public class BattleEventManager : DummyBattlePlay {
     {
         int def = (int)(_Receiver.def.min * _Ratio);
         _Receiver.def.Offset(def);
+    }
+
+    void DoPlayAnimation(string _Object, string _Animation)
+    {
+        GameObject obj = GameObject.Find(_Object);
+        if (obj != null) {
+            Animation anim = obj.GetComponent<Animation>();
+            if (anim != null) {
+                anim.Play(_Animation);
+            }    
+        }
     }
 
     // Use this for initialization
@@ -119,7 +133,7 @@ public class BattleEventManager : DummyBattlePlay {
                     m_MonsterRef.DoAction(AnimationState.Attack);
                     m_CharacterRef.DoAction(AnimationState.Hitted, TransformAnimation.Define.TIME_ATTACK);
 
-                    DoAttck(ref m_MonsterRef, ref m_CharacterRef, Random.Range(0.5f, 2.0f));
+                    DoAttck(ref m_MonsterRef, ref m_CharacterRef, Random.Range(0.15f, 0.75f));
 
                     m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
                 }
@@ -154,12 +168,14 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.Win:
                 GlobalSingleton.DEBUG("Win");
+                DoPlayAnimation("Victory", "Language_Victory_Show");
                 Invoke("OnWinAnimationFinish", 1.0f);
                 m_State = GameState.WaitForAnimation;
                 break;
 
             case GameState.Lose:
                 GlobalSingleton.DEBUG("Lose");
+                DoPlayAnimation("Lose", "Language_Victory_Show");
                 Invoke("OnLoseAnimationFinish", 1.0f);
                 m_State = GameState.WaitForAnimation;
                 break;
