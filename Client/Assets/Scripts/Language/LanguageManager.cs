@@ -192,7 +192,7 @@ public class LanguageManager : MonoBehaviour
 		{
 
 			actuallyIndexFromAnswer = m_DefendRandomMapper[ i ] ;
-			Debug.Log("button i=" + i + " actuallyIndexFromAnswer=" + actuallyIndexFromAnswer );
+			// Debug.Log("button i=" + i + " actuallyIndexFromAnswer=" + actuallyIndexFromAnswer );
 
 			if( i < this.m_DefendQuestion.m_Answers.Count )
 			{
