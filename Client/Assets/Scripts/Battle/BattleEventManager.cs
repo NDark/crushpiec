@@ -33,6 +33,15 @@ public class BattleEventManager : DummyBattlePlay {
         base.Attack(_Ratio);
         DoAttck(ref m_CharacterRef, ref m_MonsterRef, _Ratio);
         m_State = GameState.ActionForCharacter;
+
+        // re-create monster
+        //int seed = Random.Range(1, 7);
+        //m_MonsterRef.m_MeshName = "Unit_" + seed;
+        //m_MonsterRef.DoRender();
+
+        // break-part
+        //m_CharacterRef.m_ShareMeshData.FetchPart(1, gameObject);
+        //m_CharacterRef.m_ShareMeshData.FetchPart(2, gameObject);
     }
 
     public override void Defend(float _Ratio)
@@ -44,16 +53,16 @@ public class BattleEventManager : DummyBattlePlay {
 
     void DoAttck(ref Character _Hitter, ref Character _Receiver, float _Ratio)
     {
-        int atk = (int)(_Hitter.data.m_ATK.randomOneValue * _Ratio * 10.0f);
-        int def = _Receiver.data.m_DEF.value;
-        _Receiver.data.m_HP.Offset(def - atk);
-        _Receiver.data.m_DEF.ToMin();
+        int atk = (int)(_Hitter.atk.randomOneValue * _Ratio * 10.0f);
+        int def = _Receiver.def.value;
+        _Receiver.hp.Offset(def - atk);
+        _Receiver.def.ToMin();
     }
 
     void DoDefend(ref Character _Receiver, float _Ratio)
     {
-        int def = (int)(_Receiver.data.m_DEF.min * _Ratio);
-        _Receiver.data.m_DEF.Offset(def);
+        int def = (int)(_Receiver.def.min * _Ratio);
+        _Receiver.def.Offset(def);
     }
 
     // Use this for initialization
@@ -117,9 +126,9 @@ public class BattleEventManager : DummyBattlePlay {
                 // if HP = 0, else
                 GlobalSingleton.DEBUG(
                     "ValidateVictory : Character HP = "
-                  + m_CharacterRef.data.m_HP.value
+                  + m_CharacterRef.hp.value
                   + ", Monster HP = " 
-                  + m_MonsterRef.data.m_HP.value);
+                  + m_MonsterRef.hp.value);
 
                 m_State = GameState.RequestNext;
                 break;

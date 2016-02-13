@@ -26,8 +26,8 @@ public class MeshCreator {
 
     public void DestroyMesh(ref IMesh _OutMesh) {
         if (m_MeshInstanceContainer.ContainsKey(_OutMesh.m_InstanceID)) {
+            m_MeshInstanceContainer[_OutMesh.m_InstanceID].Release();
             m_MeshInstanceContainer.Remove(_OutMesh.m_InstanceID);
-
             _OutMesh = null;
         }
     }

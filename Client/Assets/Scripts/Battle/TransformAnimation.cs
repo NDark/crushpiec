@@ -16,11 +16,11 @@ public enum AnimationState
 
 public class TransformAnimation : MonoBehaviour {
     public class Define {
-        static public float TIME_IDLE = 5.0f;
+        static public float TIME_IDLE = 2.5f;
         static public float TIME_ATTACK_START = 0.1f;
-        static public float TIME_ATTACK_DO = 0.025f;
+        static public float TIME_ATTACK_DO = 0.05f;
         static public float TIME_ATTACK_END = 0.1f;
-        static public float TIME_HITTED = 0.25f;
+        static public float TIME_HITTED = 0.1f;
 
         static public float TIME_ATTACK = TIME_ATTACK_START + TIME_ATTACK_DO + TIME_ATTACK_END/2.0f;
     };
@@ -73,13 +73,13 @@ public class TransformAnimation : MonoBehaviour {
         switch (m_State)
         {
             case AnimationState.Idle:
-                m_PositionRef.y = 1.0f * Mathf.Sin(Define.TIME_IDLE * m_ElapsedTime);
+                m_PositionRef.y = 0.5f * Mathf.Sin(Define.TIME_IDLE * m_ElapsedTime);
                 m_RootRef.transform.position = m_PositionRef;
                 break;
 
             case AnimationState.Attack:
                 float ratio = Mathf.Min(m_ElapsedTime / Define.TIME_ATTACK_START, 1.0f);
-                float targetRot = -m_ScaleFactor * 30.0f * ratio;
+                float targetRot = (m_ScaleFactor > 0) ? 30.0f * ratio : 150.0f * ratio;
                 float targetScale = 1.0f + 1.0f * ratio;
                 m_RootRef.transform.rotation = Quaternion.AngleAxis(targetRot, Vector3.up);
                 m_RootRef.transform.localScale = new Vector3(m_ScaleFactor * targetScale, targetScale, targetScale);
@@ -103,8 +103,8 @@ public class TransformAnimation : MonoBehaviour {
 
             case AnimationState.Hitted:
                 m_PositionRef = m_TransformRef.m_PositionRef;
-                m_PositionRef.x += 1.0f * Random.Range(-1.0f, 1.0f);
-                m_PositionRef.y += 1.0f * Random.Range(-1.0f, 1.0f);
+                m_PositionRef.x += 2.0f * Random.Range(-1.0f, 1.0f);
+                m_PositionRef.y += 2.0f * Random.Range(-1.0f, 1.0f);
                 m_RootRef.transform.position = m_PositionRef;
                 
                 ChangeAnimationState(AnimationState.Idle, Define.TIME_HITTED, true);

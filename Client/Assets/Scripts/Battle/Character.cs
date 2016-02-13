@@ -2,16 +2,16 @@
 using System.Collections;
 
 public class Character : MonoBehaviour {
-    IMesh m_ShareMeshData = null;
+    public IMesh m_ShareMeshData = null;
     UnitData m_ShareUnitData = null;
     TransformAnimation m_ShareAnimation = null;
 
     static MeshCreator s_ShareMeshCreator = GlobalSingleton.GetMeshCreator();
     public string m_MeshName = "Unit_1";
 
-    public UnitData data {
-        get { return m_ShareUnitData; }
-    }
+    public Attribute hp { get { return m_ShareUnitData.m_HP; } }
+    public Attribute atk { get { return m_ShareUnitData.m_ATK; } }
+    public Attribute def { get { return m_ShareUnitData.m_DEF; } }
 
     public void DoRender() {
         if (m_ShareMeshData != null) {
