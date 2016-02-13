@@ -43,7 +43,7 @@ public class LanguageManager : MonoBehaviour
 			return ;
 		}
 
-		if( null != m_AttackInputField )
+		if( null != m_AttackInputField && string.Empty != m_AttackInputField.text )
 		{
 			string stringFromInput = m_AttackInputField.text ;
 			Debug.Log("stringFromInput=" + stringFromInput );
