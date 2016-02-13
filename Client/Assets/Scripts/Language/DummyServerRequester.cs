@@ -180,11 +180,11 @@ public class DummyServerRequester : MonoBehaviour
 		m_Questions.Add( new QuestionAndAnswers( ++id , "警察殺死人" , list ) ) ;
 
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "全球股市" , 6 ) ) ;
-		list.Add( new AnswerChoice( "全球證券市場" , 3 ) ) ;
-		list.Add( new AnswerChoice( "全球股份市場" , 2 ) ) ;
-		list.Add( new AnswerChoice( "全球儲積市場" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "global stock market" , list ) ) ;
+		list.Add( new AnswerChoice( "股市" , 6 ) ) ;
+		list.Add( new AnswerChoice( "證券市場" , 3 ) ) ;
+		list.Add( new AnswerChoice( "股份市場" , 2 ) ) ;
+		list.Add( new AnswerChoice( "儲積市場" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "stock market" , list ) ) ;
 
 
 		list = new List<AnswerChoice>() ;
@@ -204,26 +204,26 @@ public class DummyServerRequester : MonoBehaviour
 
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "他們解決了母親節的家庭問題" , 6 ) ) ;
-		list.Add( new AnswerChoice( "他們解決了他們的母親節的家庭問題" , 3 ) ) ;
-		list.Add( new AnswerChoice( "在母親節他們解決了他們的家庭問題" , 2 ) ) ;
-		list.Add( new AnswerChoice( "在母親節他們解決了他們的一些家庭問題" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "They solve their family problems in Mother's Day" , list ) ) ;
+		list.Add( new AnswerChoice( "他們解決了家庭問題" , 6 ) ) ;
+		list.Add( new AnswerChoice( "他們解決了他們的家庭問題" , 3 ) ) ;
+		list.Add( new AnswerChoice( "他們解決了他家庭問題" , 2 ) ) ;
+		list.Add( new AnswerChoice( "他們解決了他們的一些家庭問題" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "They solve their family problems" , list ) ) ;
 
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "很快以五比二落後" , 6 ) ) ;
-		list.Add( new AnswerChoice( "很快落後五比二損失" , 3 ) ) ;
-		list.Add( new AnswerChoice( "很快以五減二落後" , 2 ) ) ;
-		list.Add( new AnswerChoice( "很快以五之二落後" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "fall behind quickly in 5-2 loss" , list ) ) ;
+		list.Add( new AnswerChoice( "很快落後" , 6 ) ) ;
+		list.Add( new AnswerChoice( "很快落後損失" , 3 ) ) ;
+		list.Add( new AnswerChoice( "很快落下" , 2 ) ) ;
+		list.Add( new AnswerChoice( "落後很快" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "fall behind quickly" , list ) ) ;
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "留個好印象" , 6 ) ) ;
-		list.Add( new AnswerChoice( "製造一個好印象" , 3 ) ) ;
-		list.Add( new AnswerChoice( "製造一個好凹槽" , 2 ) ) ;
-		list.Add( new AnswerChoice( "製造一個好印章" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "make a good impression" , list ) ) ;
+		list.Add( new AnswerChoice( "好印象" , 6 ) ) ;
+		list.Add( new AnswerChoice( "一個好印象" , 3 ) ) ;
+		list.Add( new AnswerChoice( "一個凹槽" , 2 ) ) ;
+		list.Add( new AnswerChoice( "一個好印章" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "a good impression" , list ) ) ;
 
 
 		
@@ -244,11 +244,11 @@ public class DummyServerRequester : MonoBehaviour
 
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "瑞士科學家開發出無人救援機" , 6 ) ) ;
-		list.Add( new AnswerChoice( "瑞士科學家開發出無人駕駛飛機救援" , 3 ) ) ;
-		list.Add( new AnswerChoice( "瑞士研究員開發出無人駕駛飛機救援" , 2 ) ) ;
-		list.Add( new AnswerChoice( "瑞士科學家開發救援機器" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "Swiss researchers develop rescue drone" , list ) ) ;
+		list.Add( new AnswerChoice( "科學家開發出無人救援機" , 6 ) ) ;
+		list.Add( new AnswerChoice( "科學家開發出無人駕駛飛機救援" , 3 ) ) ;
+		list.Add( new AnswerChoice( "研究員開發出無人駕駛飛機救援" , 2 ) ) ;
+		list.Add( new AnswerChoice( "科學家開發救援機器" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "Researchers develop rescue drone" , list ) ) ;
 
 			
 		list = new List<AnswerChoice>() ;
@@ -262,9 +262,9 @@ public class DummyServerRequester : MonoBehaviour
 		list = new List<AnswerChoice>() ;
 		list.Add( new AnswerChoice( "去氧核醣核酸可能增加憂鬱症的風險" , 6 ) ) ;
 		list.Add( new AnswerChoice( "去氧核醣核酸可能會影響憂鬱症的風險" , 3 ) ) ;
-		list.Add( new AnswerChoice( "DNA可能會影響現代抑鬱症風險" , 2 ) ) ;
-		list.Add( new AnswerChoice( "DNA可能會影響現代抑鬱症" , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "DNA may influence modern depression risk" , list ) ) ;
+		list.Add( new AnswerChoice( "DNA可能會影響抑鬱症風險" , 2 ) ) ;
+		list.Add( new AnswerChoice( "DNA可能會影響抑鬱症" , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "DNA may influence depression risk" , list ) ) ;
 		
 		list = new List<AnswerChoice>() ;
 		list.Add( new AnswerChoice( "健身越多，越聰明" , 6 ) ) ;
@@ -274,11 +274,11 @@ public class DummyServerRequester : MonoBehaviour
 		m_Questions.Add( new QuestionAndAnswers( ++id , "The longer the workout, the bigger the brain" , list ) ) ;
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "Comprehensive water from households without water tonight." , 6 ) ) ;
-		list.Add( new AnswerChoice( "Households will be suplied water tonight." , 3 ) ) ;
-		list.Add( new AnswerChoice( "Villiages will have water tonight." , 2 ) ) ;
-		list.Add( new AnswerChoice( "Households will have water tonight." , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "停水戶今晚起全面供水" , list ) ) ;
+		list.Add( new AnswerChoice( "Comprehensive water from without water tonight." , 6 ) ) ;
+		list.Add( new AnswerChoice( "Water will be suplied tonight." , 3 ) ) ;
+		list.Add( new AnswerChoice( "We will have water tonight." , 2 ) ) ;
+		list.Add( new AnswerChoice( "Full water tonight." , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "今晚起全面供水" , list ) ) ;
 
 		
 		list = new List<AnswerChoice>() ;
@@ -298,11 +298,11 @@ public class DummyServerRequester : MonoBehaviour
 
 		
 		list = new List<AnswerChoice>() ;
-		list.Add( new AnswerChoice( "Fallen flowers small indeed fortunate." , 6 ) ) ;
-		list.Add( new AnswerChoice( "Fallen flowers binbin with small luck." , 3 ) ) ;
-		list.Add( new AnswerChoice( "Fallen flowers spark with small indeed." , 2 ) ) ;
-		list.Add( new AnswerChoice( "Fallen Ing sparks with small indeed." , 1 ) ) ;
-		m_Questions.Add( new QuestionAndAnswers( ++id , "落英繽紛小確幸" , list ) ) ;
+		list.Add( new AnswerChoice( "small indeed fortunate." , 6 ) ) ;
+		list.Add( new AnswerChoice( "small luck." , 3 ) ) ;
+		list.Add( new AnswerChoice( "small indeed." , 2 ) ) ;
+		list.Add( new AnswerChoice( "indeed luck." , 1 ) ) ;
+		m_Questions.Add( new QuestionAndAnswers( ++id , "小確幸" , list ) ) ;
 
 		list = new List<AnswerChoice>() ;
 		list.Add( new AnswerChoice( "fire alarm" , 6 ) ) ;
@@ -419,20 +419,145 @@ public class DummyServerRequester : MonoBehaviour
 		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
 		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
 		m_Questions.Add( new QuestionAndAnswers( ++id , "房子" , list ) ) ;
-		
-		
-		list = new List<AnswerChoice>() ;
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("international", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "國際的", list));
+
+
+
+        list = new List<AnswerChoice>() ;
 		list.Add( new AnswerChoice( "juice" , 60 ) ) ;
 		list.Add( new AnswerChoice( "bingo" , 3 ) ) ;
 		list.Add( new AnswerChoice( "jungle" , 2 ) ) ;
 		list.Add( new AnswerChoice( "detect" , 1 ) ) ;
 		m_Questions.Add( new QuestionAndAnswers( ++id , "果汁" , list ) ) ;
-		
 
 
-	}
 
-	protected QuestionAndAnswers GetAQuestionByIndex( int _Index )
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("king", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "國王", list));
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("lemon", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "檸檬", list));
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("monday", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "星期一", list));
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("ninja", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "忍者", list));
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("oscar", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "奧斯卡", list));
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("path", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "路徑", list));
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("question", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "問題", list));
+
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("risk", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "風險", list));
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("sea", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "海洋", list));
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("tea", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "茶", list));
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("umbrella", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "雨傘", list));
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("victory", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "勝利", list));
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("year", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "年", list));
+
+
+        list = new List<AnswerChoice>();
+        list.Add(new AnswerChoice("world", 60));
+        list.Add(new AnswerChoice("bingo", 3));
+        list.Add(new AnswerChoice("jungle", 2));
+        list.Add(new AnswerChoice("detect", 1));
+        m_Questions.Add(new QuestionAndAnswers(++id, "世界", list));
+
+
+
+
+    }
+
+    protected QuestionAndAnswers GetAQuestionByIndex( int _Index )
 	{
 		if( _Index >= this.m_Questions.Count )
 		{
