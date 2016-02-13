@@ -106,7 +106,11 @@ public class TransformAnimation : MonoBehaviour {
                 m_PositionRef.x += 2.0f * Random.Range(-1.0f, 1.0f);
                 m_PositionRef.y += 2.0f * Random.Range(-1.0f, 1.0f);
                 m_RootRef.transform.position = m_PositionRef;
-                
+
+                // bone animation
+                Character selfRef = GetComponent<Character>();
+                GlobalSingleton.GetFxManager().DoBreakBoneAnimation(ref selfRef);
+
                 ChangeAnimationState(AnimationState.Idle, Define.TIME_HITTED, true);
                 break;
 

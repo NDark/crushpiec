@@ -16,6 +16,7 @@ public class IMesh  {
     public int m_nSize = s_nSize;
     public int m_InstanceID;
     public int[] m_Vertices;
+    public int m_nPartCount = 0;
     public int[] m_PartMask;
 
     List<GameObject> m_VoxelCache = new List<GameObject>();
@@ -33,6 +34,7 @@ public class IMesh  {
         // optional field
         if (_CopyMesh.m_PartMask != null)
         {
+            m_nPartCount = _CopyMesh.m_nPartCount;
             m_PartMask = new int[_CopyMesh.m_PartMask.Length];
             System.Array.Copy(_CopyMesh.m_PartMask, m_PartMask, _CopyMesh.m_PartMask.Length);
         }
@@ -97,7 +99,7 @@ public class IMesh  {
         }
     }
 
-    public void BreakPart(int _PartIndex, GameObject _Root, bool _OverrideVertices = true)
+    public void BreakPart(int _PartIndex, GameObject _Root)
     {
         GlobalSingleton.DEBUG("BreakPart, part index = " + _PartIndex);
 
@@ -148,11 +150,10 @@ public class IMesh  {
             cube.mesh.colors = colors;
 #endif
 
-            // hide the voxel from vertices
-            if (_OverrideVertices)
-            {
-                m_VoxelCache[ voxelIndex ].SetActive(false);
-            }
+            // hide the voxelerase
+            m_VoxelCache[ voxelIndex ].SetActive(false);
+            // erase the flag 
+            m_PartMask[i] = 0;
         }
     }
 
@@ -163,7 +164,7 @@ public class IMesh  {
         m_SourceStr = System.Text.RegularExpressions.Regex.Replace(m_SourceStr, @"\t|\n|\r| ", string.Empty);
         string[] attrSegment = m_SourceStr.Split(';');
 
-        for (int i=0;i<attrSegment.Length;++i) {
+        for (int i = 0; i < attrSegment.Length; ++i) {
             string[] element = attrSegment[i].Split(':');
             if (element[0] == "name")
             {
@@ -184,6 +185,10 @@ public class IMesh  {
                 string valueStr = element[1];
                 string[] verticesStr = valueStr.Split(',');
                 m_PartMask = System.Array.ConvertAll(verticesStr, s => int.Parse(s));
+
+                // calculate part count
+                while (System.Array.IndexOf(m_PartMask, m_nPartCount + 1) >= 0)
+                    m_nPartCount++;
             }
         }
 

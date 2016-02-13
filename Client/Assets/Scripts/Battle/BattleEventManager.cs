@@ -4,12 +4,16 @@ using System.Collections;
 public enum GameState
 {
     Initization,
+    NextBattle,
     Idle,
     WaitForInput,
-    ActionInAnimation,
+    WaitForAnimation,
     ActionForCharacter,
     ActionForMonster,
     ValidateVictory,
+    Win,
+    Lose,
+
     RequestNext,
 
     InValid,
@@ -33,15 +37,6 @@ public class BattleEventManager : DummyBattlePlay {
         base.Attack(_Ratio);
         DoAttck(ref m_CharacterRef, ref m_MonsterRef, _Ratio);
         m_State = GameState.ActionForCharacter;
-
-        // re-create monster
-        //int seed = Random.Range(1, 7);
-        //m_MonsterRef.m_MeshName = "Unit_" + seed;
-        //m_MonsterRef.DoRender();
-
-        // break-part
-        //m_CharacterRef.m_ShareMeshData.FetchPart(1, gameObject);
-        //m_CharacterRef.m_ShareMeshData.FetchPart(2, gameObject);
     }
 
     public override void Defend(float _Ratio)
@@ -53,8 +48,11 @@ public class BattleEventManager : DummyBattlePlay {
 
     void DoAttck(ref Character _Hitter, ref Character _Receiver, float _Ratio)
     {
-        int atk = (int)(_Hitter.atk.randomOneValue * _Ratio * 10.0f);
+        int atk = (int)(_Hitter.atk.randomOneValue * _Ratio * 100.0f);
         int def = _Receiver.def.value;
+
+        GlobalSingleton.DEBUG("DoAttck atk = " + atk + ",def = " + def);
+
         _Receiver.hp.Offset(def - atk);
         _Receiver.def.ToMin();
     }
@@ -78,9 +76,20 @@ public class BattleEventManager : DummyBattlePlay {
         switch (m_State)
         {
             case GameState.Initization:
-                m_CharacterRef.DoRender();
-                m_MonsterRef.DoRender();
+                m_CharacterRef.ReCreate();
+                m_MonsterRef.ReCreate();
+                m_CharacterRef.DoUpdateHP();
+                m_MonsterRef.DoUpdateHP();
 
+                m_State = GameState.Idle;
+                break;
+
+            case GameState.NextBattle:
+                // re-create monster
+                int seed = Random.Range(1, 7);
+                m_MonsterRef.m_MeshName = "Unit_" + seed;
+                m_MonsterRef.ReCreate();
+                m_MonsterRef.DoUpdateHP();
                 m_State = GameState.Idle;
                 break;
 
@@ -99,7 +108,7 @@ public class BattleEventManager : DummyBattlePlay {
 
                 Invoke("OnActionForCharacterFinish", 1.0f);
 
-                m_State = GameState.ActionInAnimation;
+                m_State = GameState.WaitForAnimation;
                 break;
 
             case GameState.ActionForMonster:
@@ -119,18 +128,40 @@ public class BattleEventManager : DummyBattlePlay {
 
                 Invoke("OnActionForMonsterFinish", 1.0f);
 
-                m_State = GameState.ActionInAnimation;
+                m_State = GameState.WaitForAnimation;
                 break;
 
             case GameState.ValidateVictory:
-                // if HP = 0, else
                 GlobalSingleton.DEBUG(
                     "ValidateVictory : Character HP = "
-                  + m_CharacterRef.hp.value
-                  + ", Monster HP = " 
-                  + m_MonsterRef.hp.value);
+                   + m_CharacterRef.hp.value
+                   + ", Monster HP = "
+                   + m_MonsterRef.hp.value);
 
-                m_State = GameState.RequestNext;
+                if (m_CharacterRef.hp.value <= 0)
+                {
+                    m_State = GameState.Lose;
+                }
+                else if (m_MonsterRef.hp.value <= 0)
+                {
+                    m_State = GameState.Win;
+                }
+                else
+                {
+                    m_State = GameState.RequestNext;
+                }                
+                break;
+
+            case GameState.Win:
+                GlobalSingleton.DEBUG("Win");
+                Invoke("OnWinAnimationFinish", 1.0f);
+                m_State = GameState.WaitForAnimation;
+                break;
+
+            case GameState.Lose:
+                GlobalSingleton.DEBUG("Lose");
+                Invoke("OnLoseAnimationFinish", 1.0f);
+                m_State = GameState.WaitForAnimation;
                 break;
 
             case GameState.RequestNext:
@@ -140,6 +171,21 @@ public class BattleEventManager : DummyBattlePlay {
         } // End for switch
 	}
 
-    void OnActionForCharacterFinish() { m_State = GameState.ActionForMonster; }
-    void OnActionForMonsterFinish() { m_State = GameState.ValidateVictory; }
+    void OnActionForCharacterFinish() {
+        m_MonsterRef.DoUpdateHP();
+        m_State = GameState.ActionForMonster;
+    }
+
+    void OnActionForMonsterFinish() {
+        m_CharacterRef.DoUpdateHP();
+        m_State = GameState.ValidateVictory;
+    }
+
+    void OnWinAnimationFinish() {
+        m_State = GameState.NextBattle;
+    }
+
+    void OnLoseAnimationFinish() {
+        m_State = GameState.Initization;
+    }
 }
