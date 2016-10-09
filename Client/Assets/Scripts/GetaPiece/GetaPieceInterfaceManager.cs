@@ -53,7 +53,6 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public void TrySetAction2( string _ActionStr )
 	{
 		ActionKey key = m_ActionKeyEnumHelper.GetKey( _ActionStr ) ;
-
 		PressComponentButton( 2 , key ) ;
 
 	}
@@ -320,6 +319,89 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	private Color COLOR_HIDE = new Color( 50.0f/255.0f  ,  50.0f/255.0f ,  50.0f/255.0f , 114.0f / 255.0f  ) ;
 }
 
+public class GetaPieceUnitData
+{
+	public int HitPoint {get;set;}
+	public int Energy {get;set;}
+	public ActionKey [] m_Action = new ActionKey[3] ;
+	public bool m_PowerAttack = false ;
+
+	public int CalculateSufferDamage( GetaPieceUnitData _Enemy )
+	{
+		int ret = 0 ;
+		for( int i = 0 ; i < m_Action.Length && i < _Enemy.m_Action.Length ; ++i )
+		{
+			if( _Enemy.m_Action[ i ] == ActionKey.Attack )
+			{
+				if( m_Action[ i ] == ActionKey.Defend )
+				{
+					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_DEFEND : GetaPieceConst.DAMAGE_ATTACK_TO_DEFEND ;
+				}
+				else if( m_Action[ i ] == ActionKey.Attack )
+				{
+					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_ATTACK : GetaPieceConst.DAMAGE_ATTACK_TO_ATTACK ;
+				}
+				else if( m_Action[ i ] == ActionKey.Concentrate )
+				{
+					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_CONCENTRATE : GetaPieceConst.DAMAGE_ATTACK_TO_CONCENTRATE ;
+				}
+			}
+		}
+		return ret ;
+	}
+	
+	public int CalculateEnergyBuff( GetaPieceUnitData _Enemy )
+	{
+		int ret = 0 ;
+		for( int i = 0 ; i < m_Action.Length && i < _Enemy.m_Action.Length ; ++i )
+		{
+			if( _Enemy.m_Action[ i ] == ActionKey.Attack 
+				&& m_Action[ i ] == ActionKey.Defend ) 
+			{
+				ret += GetaPieceConst.BUFF_ENERGY_ATTACK_TO_DEFEND ;
+			}
+		}
+		return ret ;
+	}
+	
+	public int CalculateCostEnergy()
+	{
+		int ret = 0 ;
+		for( int i = 0 ; i < m_Action.Length  ; ++i )
+		{
+			switch( m_Action[ i ] )
+			{
+			case ActionKey.Attack :
+				ret += GetaPieceConst.COST_ENERGY_ATTACK ;
+				break ;
+			case ActionKey.Defend :
+				ret += GetaPieceConst.COST_ENERGY_DEFEND ;
+				break ;
+			case ActionKey.Concentrate :
+				ret += GetaPieceConst.COST_ENERGY_CONCENTRATE ;
+				break ;
+			}
+		}
+		return ret ;
+	}
+}
+
+public static class GetaPieceConst
+{
+	public static int COST_ENERGY_ATTACK = 3 ;
+	public static int COST_ENERGY_DEFEND = 1 ;
+	public static int COST_ENERGY_CONCENTRATE = 0 ;
+
+	public static int BUFF_ENERGY_ATTACK_TO_DEFEND = 1 ;
+
+	public static int DAMAGE_ATTACK_TO_ATTACK = 2 ;
+	public static int DAMAGE_ATTACK_TO_CONCENTRATE = 2 ;
+	public static int DAMAGE_ATTACK_TO_DEFEND = 0 ;
+	public static int DAMAGE_POWER_ATTACK_TO_CONCENTRATE = 3 ;
+	public static int DAMAGE_POWER_ATTACK_TO_ATTACK = 3 ;
+	public static int DAMAGE_POWER_ATTACK_TO_DEFEND = 1 ;
+
+}
 
 public enum ActionKey 
 {
