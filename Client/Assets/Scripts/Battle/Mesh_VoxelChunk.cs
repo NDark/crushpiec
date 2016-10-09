@@ -13,7 +13,7 @@ public class Mesh_VoxelChunk : IMesh
     {
         public Vector3  LocalPos;
         public Vector2  Scale;
-        public int      Size;
+        public Vector2  Size;
         public string   Model;
     }
 
@@ -79,7 +79,7 @@ public class Mesh_VoxelChunk : IMesh
             AttachModel(chunk, model, c);
         }
     }
-
+    
     public void AttachModel(string chunk, string model, Chunk c)
     {
         if (m_ChunkCache.ContainsKey(chunk) && c.Model == model)
@@ -96,7 +96,7 @@ public class Mesh_VoxelChunk : IMesh
 
         if (m_ModelMap.ContainsKey(model))
         {
-            int size = c.Size;
+            Vector2 size = c.Size;
             Vector2 scale = c.Scale;
             Vector3 objectPos = c.LocalPos;
             int[] vertex = m_ModelMap[model];
@@ -110,7 +110,10 @@ public class Mesh_VoxelChunk : IMesh
                 + objectPos + ","
                 + size);
 
-            for (int i = 0; i < vertex.Length; ++i)
+            int _w = (int)size.x;
+            int _h = (int)size.y;
+            int _size = _w * _h;
+            for (int i = 0; i < _size /*vertex.Length*/ ; ++i)
             {
                 int voxel = vertex[i];
                 if (voxel > 0)
@@ -124,11 +127,10 @@ public class Mesh_VoxelChunk : IMesh
                             localScale.x * scale.x,
                             localScale.y * scale.y,
                             localScale.z);
-
                     obj.transform.position = root.transform.position
                         + new Vector3(
-                            localScale.x * (scale.x * (i % size - size / 2) + objectPos.x),
-                            localScale.y * (scale.y * (size / 2 - i / size) + objectPos.y),
+                            localScale.x * (scale.x * (i % _w - _h / 2) + objectPos.x),
+                            localScale.y * (scale.y * (_h / 2 - i / _w) + objectPos.y),
                             objectPos.z);
 
                     // use Sprites-Default material
@@ -214,14 +216,20 @@ public class Mesh_VoxelChunk : IMesh
                         float.Parse(vector3String[2])
                     );
 
-                    string[] vector2String = chunkSegment[3].Split(',');
+                    string[] scale2String = chunkSegment[3].Split(',');
                     Vector2 localScale = new Vector2
                     (
-                        float.Parse(vector2String[0]),
-                        float.Parse(vector2String[1])
+                        float.Parse(scale2String[0]),
+                        float.Parse(scale2String[1])
                     );
-                   
-                    int size = int.Parse(chunkSegment[4]);
+
+                    string[] size2String = chunkSegment[4].Split(',');
+                    Vector2 size = new Vector2
+                    (
+                        float.Parse(size2String[0]),
+                        float.Parse(size2String[1])
+                    );
+                    
                     GlobalSingleton.DEBUG("chunk = " 
                         + name + "," 
                         + localPosition + ","
