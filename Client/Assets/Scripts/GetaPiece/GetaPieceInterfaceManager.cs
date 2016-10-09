@@ -23,13 +23,15 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	public void TrySetAction( int _ComponentIndex , ActionKey _Action )
 	{
-		
+		Debug.Log("TrySetAction _ComponentIndex=" + _ComponentIndex + " _Action=" + _Action );
+
 	}
 
 	
 	public void TryStart()
 	{
-		
+		Debug.Log("TryStart" );
+
 	}
 
 	// Use this for initialization
