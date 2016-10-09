@@ -27,9 +27,12 @@ public class IMesh  {
         m_Name = _CopyMesh.m_Name;
         m_nSize = _CopyMesh.m_nSize;
         m_InstanceID = _CopyMesh.m_InstanceID;
-        m_Vertices = new int[_CopyMesh.m_Vertices.Length];
 
-        System.Array.Copy(_CopyMesh.m_Vertices, m_Vertices, _CopyMesh.m_Vertices.Length);
+        if (null != _CopyMesh.m_Vertices)
+        {
+            m_Vertices = new int[_CopyMesh.m_Vertices.Length];
+            System.Array.Copy(_CopyMesh.m_Vertices, m_Vertices, _CopyMesh.m_Vertices.Length);
+        }
 
         // optional field
         if (_CopyMesh.m_PartMask != null)
@@ -52,7 +55,7 @@ public class IMesh  {
         }
     }
 
-    public void Draw(GameObject _Root) {
+    public virtual void Draw(GameObject _Root) {
         GlobalSingleton.DEBUG("Draw, size = " + m_nSize + ", sizeof vertices = " + m_Vertices.Length);
 
         for (int i = 0 ; i < m_Vertices.Length ; ++i)
@@ -99,7 +102,7 @@ public class IMesh  {
         }
     }
 
-    public void BreakPart(int _PartIndex, GameObject _Root)
+    public virtual void BreakPart(int _PartIndex, GameObject _Root)
     {
         GlobalSingleton.DEBUG("BreakPart, part index = " + _PartIndex);
 
@@ -157,7 +160,7 @@ public class IMesh  {
         }
     }
 
-    public bool DoParse() {
+    public virtual bool DoParse() {
         GlobalSingleton.DEBUG("DoParse, SourceStr = " + m_SourceStr);
 
         // remove unused char(space, new line, etc...)

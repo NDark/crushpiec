@@ -18,7 +18,7 @@ public class MeshCreator {
             }
         }
 
-        IMesh meshInstance = new IMesh(m_MeshTemplateContainer[meshname]);
+        Mesh_VoxelChunk meshInstance = new Mesh_VoxelChunk(m_MeshTemplateContainer[meshname]);
         meshInstance.m_InstanceID = s_UniqueInstanceID++;
         m_MeshInstanceContainer.Add(meshInstance.m_InstanceID, meshInstance);
         return meshInstance;
@@ -32,13 +32,13 @@ public class MeshCreator {
         }
     }
 
-    IMesh Load(string filename) {
+    Mesh_VoxelChunk Load(string filename) {
         string filepath = s_Path + filename;
         TextAsset textAsset = Resources.Load(filepath) as TextAsset;
         if (!textAsset) {
             GlobalSingleton.ERROR("Load file failed : " + filepath);
             return null;
         }
-        return new IMesh(textAsset.text);
+        return new Mesh_VoxelChunk(textAsset.text);
     }
 }
