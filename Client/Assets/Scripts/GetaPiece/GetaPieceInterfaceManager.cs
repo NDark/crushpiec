@@ -20,6 +20,10 @@ public enum GetaPieceInterfaceState
 
 public class GetaPieceInterfaceManager : MonoBehaviour 
 {
+	public GameObject m_UnitDataGameObject = null ;
+	public GetaPieceUnitData m_Player = null ;
+	public GetaPieceUnitData m_Enemy = null ;
+
 	public UnityEngine.UI.Image [] m_Component0ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component1ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component2ButtonsImages = null ;
@@ -30,9 +34,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public List<UnityEngine.UI.Image> m_EnergyGrids = new List<UnityEngine.UI.Image>() ;
 	public GameObject m_StartButton = null ;
 
+
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
 
-	public int m_EnergyNow = 0 ;
 
 	public void TrySetAction0( string _ActionStr )
 	{
@@ -59,11 +63,11 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	public void SetAction( int _ComponentIndex , ActionKey _Action )
 	{
-		Debug.Log("SetAction() _ComponentIndex=" + _ComponentIndex + " _Action=" + _Action );
+		// Debug.Log("SetAction() _ComponentIndex=" + _ComponentIndex + " _Action=" + _Action );
 		m_SelectedActions[ _ComponentIndex ] = _Action ;
 
-		int currentCostEnergy = CalculateCostEnergy() ;
-		SetEnergyGrid( m_EnergyNow , currentCostEnergy , 0 ) ;
+		int currentCostEnergy = CalculateCostEnergyFromInput() ;
+		SetEnergyGrid( m_Player.Energy , currentCostEnergy , 0 ) ;
 	}
 
 	
@@ -78,23 +82,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-		/*
-		public enum GetaPieceInterfaceState
-		{
-			UnActive = 0 ,
-			InterfaceInitialize ,
-			BattleInitialize ,
-			WaitBattleInitialize ,
-			
-			EnterRound ,
-			WaitPlayerInput ,
-			EnterAnimation ,
-			WaitAnimation ,
-			JudgeVictory ,
-			
-			EndGame ,
-		}
-		//*/
+	
 
 		switch( m_State ) 
 		{
@@ -140,6 +128,12 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			Debug.LogError("null == m_EnergyGridParent");
 			return ;
 		}
+		
+		if( null == m_UnitDataGameObject )
+		{
+			Debug.LogError("null == m_UnitDataGameObject");
+			return ;
+		}
 
 		InterfaceInitialize_Data() ;
 
@@ -150,6 +144,14 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void InterfaceInitialize_Data()
 	{
+		GetaPieceUnitDataComponent unitDataComponent = m_UnitDataGameObject.GetComponent<GetaPieceUnitDataComponent>() ;
+		if( null != unitDataComponent )
+		{
+			m_Player = unitDataComponent.m_Player ;
+			m_Player.Reset() ;
+			m_Enemy = unitDataComponent.m_Enemy ;
+			m_Enemy.Reset() ;
+		}
 
 		for( int i = 0 ; i < m_SelectedActions.Length ; ++i )
 		{
@@ -194,16 +196,35 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void EnterRound()
 	{
+		Debug.Log("m_Player.Energy" + m_Player.Energy );
+		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		Debug.Log("m_Player.Energy" + m_Player.Energy );
 
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
 
+
+
 		m_State = GetaPieceInterfaceState.WaitPlayerInput ;
 	}
-	
+
+	private void CostEnergyForUnit( GetaPieceUnitData _Unit )
+	{
+		// calculate cost 
+		int currentEnerty = m_Player.Energy ;
+		int cost = m_Player.CalculateCostEnergy() ;
+		int resultEnergy = currentEnerty - cost ;
+		m_Player.Energy = resultEnergy ;
+	}
+
 	private void EnterAnimation()
 	{
+		// calculate cost 
+		CostEnergyForUnit( m_Player ) ;
+		SetEnergyGrid( m_Player.Energy , 0 , 0 ) ;
+
 		m_State = GetaPieceInterfaceState.WaitAnimation ;
 	}
 	
@@ -296,18 +317,22 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 	}
 
-	private int CalculateCostEnergy()
+	private int CalculateCostEnergyFromInput()
 	{
 		int ret = 0 ;
 		for( int i = 0 ; i < this.m_SelectedActions.Length ; ++i )
 		{
 			if( this.m_SelectedActions[ i ] == ActionKey.Attack )
 			{
-				ret += 2 ;
+				ret += GetaPieceConst.COST_ENERGY_ATTACK ;
 			}
 			else if( this.m_SelectedActions[ i ] == ActionKey.Defend )
 			{
-				ret += 1 ;
+				ret += GetaPieceConst.COST_ENERGY_DEFEND ;
+			}
+			else if( this.m_SelectedActions[ i ] == ActionKey.Concentrate )
+			{
+				ret += GetaPieceConst.COST_ENERGY_CONCENTRATE ;
 			}
 		}
 		return ret ;
@@ -317,90 +342,6 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
 	private Color COLOR_PURPLE = new Color( 1 , 0 , 1 ) ;
 	private Color COLOR_HIDE = new Color( 50.0f/255.0f  ,  50.0f/255.0f ,  50.0f/255.0f , 114.0f / 255.0f  ) ;
-}
-
-public class GetaPieceUnitData
-{
-	public int HitPoint {get;set;}
-	public int Energy {get;set;}
-	public ActionKey [] m_Action = new ActionKey[3] ;
-	public bool m_PowerAttack = false ;
-
-	public int CalculateSufferDamage( GetaPieceUnitData _Enemy )
-	{
-		int ret = 0 ;
-		for( int i = 0 ; i < m_Action.Length && i < _Enemy.m_Action.Length ; ++i )
-		{
-			if( _Enemy.m_Action[ i ] == ActionKey.Attack )
-			{
-				if( m_Action[ i ] == ActionKey.Defend )
-				{
-					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_DEFEND : GetaPieceConst.DAMAGE_ATTACK_TO_DEFEND ;
-				}
-				else if( m_Action[ i ] == ActionKey.Attack )
-				{
-					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_ATTACK : GetaPieceConst.DAMAGE_ATTACK_TO_ATTACK ;
-				}
-				else if( m_Action[ i ] == ActionKey.Concentrate )
-				{
-					ret += (_Enemy.m_PowerAttack) ? GetaPieceConst.DAMAGE_POWER_ATTACK_TO_CONCENTRATE : GetaPieceConst.DAMAGE_ATTACK_TO_CONCENTRATE ;
-				}
-			}
-		}
-		return ret ;
-	}
-	
-	public int CalculateEnergyBuff( GetaPieceUnitData _Enemy )
-	{
-		int ret = 0 ;
-		for( int i = 0 ; i < m_Action.Length && i < _Enemy.m_Action.Length ; ++i )
-		{
-			if( _Enemy.m_Action[ i ] == ActionKey.Attack 
-				&& m_Action[ i ] == ActionKey.Defend ) 
-			{
-				ret += GetaPieceConst.BUFF_ENERGY_ATTACK_TO_DEFEND ;
-			}
-		}
-		return ret ;
-	}
-	
-	public int CalculateCostEnergy()
-	{
-		int ret = 0 ;
-		for( int i = 0 ; i < m_Action.Length  ; ++i )
-		{
-			switch( m_Action[ i ] )
-			{
-			case ActionKey.Attack :
-				ret += GetaPieceConst.COST_ENERGY_ATTACK ;
-				break ;
-			case ActionKey.Defend :
-				ret += GetaPieceConst.COST_ENERGY_DEFEND ;
-				break ;
-			case ActionKey.Concentrate :
-				ret += GetaPieceConst.COST_ENERGY_CONCENTRATE ;
-				break ;
-			}
-		}
-		return ret ;
-	}
-}
-
-public static class GetaPieceConst
-{
-	public static int COST_ENERGY_ATTACK = 3 ;
-	public static int COST_ENERGY_DEFEND = 1 ;
-	public static int COST_ENERGY_CONCENTRATE = 0 ;
-
-	public static int BUFF_ENERGY_ATTACK_TO_DEFEND = 1 ;
-
-	public static int DAMAGE_ATTACK_TO_ATTACK = 2 ;
-	public static int DAMAGE_ATTACK_TO_CONCENTRATE = 2 ;
-	public static int DAMAGE_ATTACK_TO_DEFEND = 0 ;
-	public static int DAMAGE_POWER_ATTACK_TO_CONCENTRATE = 3 ;
-	public static int DAMAGE_POWER_ATTACK_TO_ATTACK = 3 ;
-	public static int DAMAGE_POWER_ATTACK_TO_DEFEND = 1 ;
-
 }
 
 public enum ActionKey 
