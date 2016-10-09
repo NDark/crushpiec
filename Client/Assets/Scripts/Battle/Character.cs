@@ -48,10 +48,10 @@ public class Character : MonoBehaviour {
         Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
         if (null != Mesh)
         {
+            string[] models = { "body_0", "body_1", "body_2", "shield", "axe", "sword" };
             chunkIndex = (chunkIndex + 1) % 3 + 1;
-            int index = Random.Range(0, 100) % 3;
-            string[] models = { "shield", "axe", "sword" };
-
+            int index = Random.Range(0, 100) % models.Length;
+           
             Mesh.ChangeModel("bone"+ chunkIndex, models[index]);
         }
     }

@@ -15,6 +15,7 @@ public class Mesh_VoxelChunk : IMesh
         public Vector2  Scale;
         public Vector2  Size;
         public string   Model;
+        public int[]    Vertex;
     }
 
     private static string s_VoxelPrefab = "Battle/Prefabs/Voxel";
@@ -22,7 +23,7 @@ public class Mesh_VoxelChunk : IMesh
     private GameObject root = null;
 
     Dictionary<string, Chunk> m_ChunkMap = new Dictionary<string, Chunk>();
-    Dictionary<string, int[]> m_ModelMap = new Dictionary<string, int[]>();
+    Dictionary<string, Chunk> m_ModelMap = new Dictionary<string, Chunk>();
     Dictionary<string, List<GameObject>> m_ChunkCache = new Dictionary<string, List<GameObject>>();
     
     public bool HasChunk
@@ -40,7 +41,7 @@ public class Mesh_VoxelChunk : IMesh
         get { return m_ModelMap.Count() > 0; }
     }
 
-    public Dictionary<string, int[]> ModelMap
+    public Dictionary<string, Chunk> ModelMap
     {
         get { return m_ModelMap; }
     }
@@ -60,7 +61,7 @@ public class Mesh_VoxelChunk : IMesh
         }
         if (_copyVoxelChunk.HasModel)
         {
-            m_ModelMap = new Dictionary<string, int[]>(_copyVoxelChunk.ModelMap);
+            m_ModelMap = new Dictionary<string, Chunk>(_copyVoxelChunk.ModelMap);
         }
     }
 
@@ -94,12 +95,13 @@ public class Mesh_VoxelChunk : IMesh
             m_ChunkCache.Remove(chunk);
         }
 
-        if (m_ModelMap.ContainsKey(model))
+        Chunk c0;
+        if (m_ModelMap.TryGetValue(model, out c0))
         {
-            Vector2 size = c.Size;
-            Vector2 scale = c.Scale;
-            Vector3 objectPos = c.LocalPos;
-            int[] vertex = m_ModelMap[model];
+            Vector2 size = c0.Size;
+            Vector2 scale = c0.Scale;
+            Vector3 objectPos = c.LocalPos + c0.LocalPos;
+            int[] vertex = c0.Vertex;
             m_ChunkMap[chunk].Model = model;
             m_ChunkCache.Add(chunk, new List<GameObject>());
 
@@ -203,8 +205,8 @@ public class Mesh_VoxelChunk : IMesh
                 for (int j = 1; j < chunks.Length; ++j)
                 {
                     string[] chunkSegment = chunks[j].Split('|');
-                    if (chunkSegment.Length < 5)
-                        continue;
+                    // if (chunkSegment.Length < 5)
+                    //    continue;
                     
                     string name = chunkSegment[0];
                     string model = chunkSegment[1];
@@ -216,47 +218,57 @@ public class Mesh_VoxelChunk : IMesh
                         float.Parse(vector3String[2])
                     );
 
-                    string[] scale2String = chunkSegment[3].Split(',');
-                    Vector2 localScale = new Vector2
-                    (
-                        float.Parse(scale2String[0]),
-                        float.Parse(scale2String[1])
-                    );
-
-                    string[] size2String = chunkSegment[4].Split(',');
-                    Vector2 size = new Vector2
-                    (
-                        float.Parse(size2String[0]),
-                        float.Parse(size2String[1])
-                    );
-                    
-                    GlobalSingleton.DEBUG("chunk = " 
-                        + name + "," 
-                        + localPosition + ","
-                        + localScale + ","
-                        + size);
+                    GlobalSingleton.DEBUG("chunk = "
+                        + name + ","
+                        + localPosition);
 
                     Chunk c = new Chunk();
                     c.Model = model;
                     c.LocalPos = localPosition;
-                    c.Scale = localScale;
-                    c.Size = size;
+                    // c.Scale = localScale;
+                    // c.Size = size;
                     m_ChunkMap.Add(name, c);
                 }
             }
             else if (!m_ModelMap.ContainsKey(element[0]))
             {
-                if (element.Length < 2)
+                if (element.Length < 5)
                     continue;
+
+                string[] pos3String = element[1].Split(',');
+                Vector3 localPosition = new Vector3
+                (
+                    float.Parse(pos3String[0]),
+                    float.Parse(pos3String[1]),
+                    float.Parse(pos3String[2])
+                );
+
+                string[] scale2String = element[2].Split(',');
+                Vector2 localScale = new Vector2
+                (
+                    float.Parse(scale2String[0]),
+                    float.Parse(scale2String[1])
+                );
+
+                string[] size2String = element[3].Split(',');
+                Vector2 size = new Vector2
+                (
+                    float.Parse(size2String[0]),
+                    float.Parse(size2String[1])
+                );
 
                 GlobalSingleton.DEBUG("add model: " + element[0]);
 
-                string valueStr = element[1];
+                string valueStr = element[4];
                 string[] verticesStr = valueStr.Split(',');
-                m_ModelMap.Add(
-                    element[0],
-                    System.Array.ConvertAll(verticesStr, s => int.Parse(s))
-                    );
+
+                Chunk c = new Chunk();
+                c.Model = element[0];
+                c.LocalPos = localPosition;               
+                c.Scale = localScale;
+                c.Size = size;
+                c.Vertex = System.Array.ConvertAll(verticesStr, s => int.Parse(s));
+                m_ModelMap.Add(element[0], c);                
             }
         }
 

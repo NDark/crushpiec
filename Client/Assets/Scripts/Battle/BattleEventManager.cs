@@ -115,7 +115,7 @@ public class BattleEventManager : DummyBattlePlay {
                 DoCreateOneCharacter(ref m_CharacterRef, false);
                 DoCreateOneCharacter(ref m_MonsterRef, false);
                 // DoUpdateCountDown();
-                m_CharacterRef.DoChangeModel();
+                m_CharacterRef.DoChangeModel();                
 
                 m_State = GameState.Idle;
                 break;
@@ -134,6 +134,7 @@ public class BattleEventManager : DummyBattlePlay {
                 if (Input.GetKeyUp(KeyCode.A))
                 {
                     m_CharacterRef.DoChangeModel();
+                    m_MonsterRef.DoChangeModel();
                 }
                 break;
 
