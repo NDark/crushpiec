@@ -23,8 +23,16 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public UnityEngine.UI.Image [] m_Component0ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component1ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component2ButtonsImages = null ;
+	
+	public UnityEngine.UI.Image m_EnergyLabelBackground = null ;
+	public UnityEngine.UI.Text m_EnergyLabel = null ;
+	public GameObject m_EnergyGridParent = null ;
+	public List<UnityEngine.UI.Image> m_EnergyGrids = new List<UnityEngine.UI.Image>() ;
+	public GameObject m_StartButton = null ;
 
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
+
+	public int m_EnergyNow = 0 ;
 
 	public void TrySetAction0( string _ActionStr )
 	{
@@ -50,11 +58,13 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	}
 	
-	public void TrySetAction( int _ComponentIndex , ActionKey _Action )
+	public void SetAction( int _ComponentIndex , ActionKey _Action )
 	{
-		Debug.Log("TrySetAction _ComponentIndex=" + _ComponentIndex + " _Action=" + _Action );
+		Debug.Log("SetAction() _ComponentIndex=" + _ComponentIndex + " _Action=" + _Action );
 		m_SelectedActions[ _ComponentIndex ] = _Action ;
 
+		int currentCostEnergy = CalculateCostEnergy() ;
+		SetEnergyGrid( m_EnergyNow , currentCostEnergy , 0 ) ;
 	}
 
 	
@@ -123,11 +133,56 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	}
 
+
 	private void InterfaceInitialize()
 	{
+		if( null == m_EnergyGridParent )
+		{
+			Debug.LogError("null == m_EnergyGridParent");
+			return ;
+		}
+
+		InterfaceInitialize_Data() ;
+
+		InterfaceInitialize_EnergyGrid() ;
+
 		m_State = GetaPieceInterfaceState.BattleInitialize ;
 	}
 	
+	private void InterfaceInitialize_Data()
+	{
+
+		for( int i = 0 ; i < m_SelectedActions.Length ; ++i )
+		{
+			m_SelectedActions[ i ] = ActionKey.Concentrate ;
+		}
+
+	}
+	
+	private void InterfaceInitialize_EnergyGrid()
+	{
+		UnityEngine.UI.Image image = null ;
+		Transform trans = null ;
+		int size = 10 ;
+		for( int i = 0 ; i < size ; ++i )
+		{
+			trans = m_EnergyGridParent.transform.FindChild("E" + i.ToString() ) ;
+			if( null == trans )
+			{
+				Debug.LogWarning("null == trans i=" + i );
+				continue ;
+			}
+			
+			image = trans.gameObject.GetComponent<UnityEngine.UI.Image>() ;
+			if( null != image )
+			{
+				m_EnergyGrids.Add( image ) ;
+			}
+			
+		}
+		Debug.Log("m_EnergyGrids.Count=" + m_EnergyGrids.Count );
+	}
+
 	private void BattleInitialize()
 	{
 		m_State = GetaPieceInterfaceState.WaitBattleInitialize ;
@@ -140,7 +195,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void EnterRound()
 	{
-		
+
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
@@ -165,7 +220,48 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	}
 
-	
+	private void SetEnergyGrid( int _EnergyNow , int _PreCostValue , int _PreBuffValue )
+	{
+		int maxSize = m_EnergyGrids.Count ;
+		int costedValue = _EnergyNow - _PreCostValue ;
+		// Debug.Log("costedValue="+costedValue);
+
+		for( int i = 0 ; i < maxSize ; ++i )
+		{
+
+			ShowEnergyTooLow( costedValue < 0 ) ;
+
+			if( i >= _EnergyNow ) 
+			{
+				m_EnergyGrids[ i ].color = Color.grey ;
+			}
+			else if( i < _EnergyNow && i >= costedValue )
+			{
+				m_EnergyGrids[ i ].color = Color.red ;
+			}
+			else 
+			{
+				m_EnergyGrids[ i ].color = Color.green ;
+			}
+		}
+
+
+	}
+
+	private void ShowEnergyTooLow( bool _Show )
+	{
+		if( null == m_EnergyLabel )
+		{
+			return ;
+		}
+
+		m_EnergyLabel.color = (_Show) ? COLOR_PURPLE : COLOR_HIDE ;
+		m_EnergyLabel.text = (_Show) ? "Energy Too Low!!!" : "Energy" ;
+		m_EnergyLabelBackground.enabled = _Show ;
+
+		m_StartButton.SetActive( !_Show ) ;
+	}
+
 	private void PressComponentButton( int _ComponentIndex , ActionKey _Action )
 	{
 		int keyIndex = (int) _Action ;
@@ -182,9 +278,10 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			_Images = m_Component2ButtonsImages ;
 			break ;
 		}
+
 		SetColorForSelectComponentButtons( _Images , keyIndex ) ;
 		
-		TrySetAction( _ComponentIndex , _Action ) ;
+		SetAction( _ComponentIndex , _Action ) ;
 	}
 
 	private void SetColorForSelectComponentButtons( UnityEngine.UI.Image [] _ImageArray , int _SelectIndex )
@@ -200,8 +297,27 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 	}
 
+	private int CalculateCostEnergy()
+	{
+		int ret = 0 ;
+		for( int i = 0 ; i < this.m_SelectedActions.Length ; ++i )
+		{
+			if( this.m_SelectedActions[ i ] == ActionKey.Attack )
+			{
+				ret += 2 ;
+			}
+			else if( this.m_SelectedActions[ i ] == ActionKey.Defend )
+			{
+				ret += 1 ;
+			}
+		}
+		return ret ;
+	}
+
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
+	private Color COLOR_PURPLE = new Color( 1 , 0 , 1 ) ;
+	private Color COLOR_HIDE = new Color( 50.0f/255.0f  ,  50.0f/255.0f ,  50.0f/255.0f , 114.0f / 255.0f  ) ;
 }
 
 
