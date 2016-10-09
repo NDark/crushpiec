@@ -42,6 +42,19 @@ public class Character : MonoBehaviour {
             m_ShareMeshData.Draw(this.gameObject);
         }
     }
+    int chunkIndex = 0;
+    public void DoChangeModel()
+    {
+        Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
+        if (null != Mesh)
+        {
+            chunkIndex = (chunkIndex + 1) % 3 + 1;
+            int index = Random.Range(0, 100) % 3;
+            string[] models = { "shield", "axe", "sword" };
+
+            Mesh.ChangeModel("bone"+ chunkIndex, models[index]);
+        }
+    }
 
     public void DoAction(AnimationState _State, float _Delay = 0.0f) {
         m_ShareAnimation.ChangeAnimationState(_State, _Delay);
