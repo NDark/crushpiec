@@ -44,6 +44,10 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public GameObject m_EnergyGridBackgroundParent = null ;
 	public List<UnityEngine.UI.Image> m_EnergyBackgrounds = new List<UnityEngine.UI.Image>() ;
 	
+	public int m_LastEnergyValue = 0 ;
+	public int m_TimeRefillNum = 0 ;
+	public int m_DefendSucceedNum = 0 ;
+	
 	public UnityEngine.Sprite m_Shield = null ;
 	public UnityEngine.Sprite m_Clock = null ;
 	
@@ -57,6 +61,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public RectTransform m_HitPointEnemy = null ;
 
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
+	
+	
 
 
 	public void TrySetAction0( string _ActionStr )
@@ -103,7 +109,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 
 		CalculateActionsOfEnemy() ;
-
+		
+		HideAllEnergyBackground() ;
+		
 		m_InAttackBlockBackground.Blend("Language_StartAction_Show");
 
 		m_State = GetaPieceInterfaceState.EnterAnimation ;
@@ -196,6 +204,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		{
 			m_SelectedActions[ i ] = ActionKey.Concentrate ;
 		}
+		
+		m_LastEnergyValue = m_Player.Energy ;
 
 	}
 	
@@ -261,6 +271,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
+		
+		UpdateEnergyBackground() ;
 
 		CheckPowerAttackPicture() ;
 
@@ -277,6 +289,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		int cost = m_Player.CalculateCostEnergy() ;
 		int resultEnergy = currentEnerty - cost ;
 		m_Player.Energy = resultEnergy ;
+		
+		m_LastEnergyValue = m_Player.Energy ;
 	}
 
 	private void EnterAnimation()
@@ -329,6 +343,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		CalculateDamageFromData() ;
 		UpdateHitPointFromDataOnce() ;
 
+		
+		
 		CalculateDefendSucceed() ;
 
 		bool isVicotryJudged = false ;
@@ -501,6 +517,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	private void CalculateDefendSucceed()
 	{
 		int energyBuff = m_Player.CalculateEnergyBuffAsAWhole( m_Enemy ) ;
+		m_DefendSucceedNum = energyBuff ;
 		m_Player.Energy += energyBuff ;
 		energyBuff = m_Enemy.CalculateEnergyBuffAsAWhole( m_Player ) ;
 		m_Enemy.Energy += energyBuff ;
@@ -587,6 +604,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	private void CalculateEnergyRefill()
 	{
+		m_TimeRefillNum = GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 	}
@@ -617,7 +635,55 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	}
 
-
+	private void UpdateEnergyBackground()
+	{
+		if( null == m_EnergyBackgrounds )
+		{
+			return ;
+		}
+		
+		int firstLine = m_LastEnergyValue ;
+		int secondLine = m_LastEnergyValue + m_TimeRefillNum ;
+		int thirdLine = m_LastEnergyValue + m_TimeRefillNum + m_DefendSucceedNum ;
+		
+		Debug.Log("m_LastEnergyValue" + m_LastEnergyValue ) ;
+		Debug.Log("m_TimeRefillNum" + m_TimeRefillNum ) ;
+		Debug.Log("m_DefendSucceedNum" + m_DefendSucceedNum ) ;
+		for( int i = 0 ; i < m_EnergyBackgrounds.Count ; ++i )
+		{
+			
+			m_EnergyBackgrounds[ i ].enabled = 
+				( i >= firstLine 
+				 && i < thirdLine ) ;
+			
+			if( i >= m_LastEnergyValue &&
+			   i < secondLine )
+			{
+				m_EnergyBackgrounds[ i ].sprite = m_Clock ;
+			}
+			else if( i >= secondLine &&
+			        i < thirdLine )
+	        {
+				m_EnergyBackgrounds[ i ].sprite = m_Shield ;	        
+	        }
+			
+		}
+	}
+	
+	
+	private void HideAllEnergyBackground()
+	{
+		if( null == m_EnergyBackgrounds )
+		{
+			return ;
+		}
+		
+		for( int i = 0 ; i < m_EnergyBackgrounds.Count ; ++i )
+		{
+			m_EnergyBackgrounds[ i ].enabled = false ;
+		}
+	}
+	
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
 	private Color COLOR_PURPLE = new Color( 1 , 0 , 1 ) ;
