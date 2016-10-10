@@ -8,9 +8,9 @@ public enum GameState
     Idle,
     WaitForInput,
     WaitForAnimation,
-    ActionForCharacterAttack,
-    ActionForCharacterDefend,
-    ActionForMonster,
+    ActionForChaanel0,
+    ActionForChaanel1,
+    ActionForChaanel2,
     ValidateVictory,
     Win,
     Lose,
@@ -25,32 +25,26 @@ public class BattleEventManager : DummyBattlePlay {
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
     public GetaPieceUnitDataComponent m_UnitDataRef = null;
-
-    static int s_WaitTurnForMonsterMax = 2;
-    int m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
-
+    float m_ElapsedTime = 0.0f;
+     
     // override interface
     public override bool IsInitialized()
     {
-        return true;
+        return m_State>GameState.Initization;
     }
 
     public override bool IsInAnimation()
     {
-        return true;
+        return m_State >= GameState.ActionForChaanel0 && m_State <= GameState.ActionForChaanel2;
     }
 
     public override void StartBattle()
     {
+        OnAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+        OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
 
-    }
-
-    void DoAttck(ref Character _Hitter, ref Character _Receiver, float _Ratio)
-    {    
-    }
-
-    void DoDefend(ref Character _Receiver, float _Ratio)
-    {  
+        m_State = GameState.ActionForChaanel0;
+        m_ElapsedTime = 0.0f;
     }
 
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
@@ -75,15 +69,6 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.Initization:
                 DoCreateOneCharacter(ref m_CharacterRef, false);
                 DoCreateOneCharacter(ref m_MonsterRef, false);
-                // DoUpdateCountDown();
-                // m_CharacterRef.DoChangeModel(2, MODELTYPE.E_DEFENSE);
-
-                m_State = GameState.Idle;
-                break;
-
-            case GameState.NextBattle:
-                DoCreateOneCharacter(ref m_MonsterRef);
-                // DoUpdateCountDown();
                 m_State = GameState.Idle;
                 break;
 
@@ -94,18 +79,38 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.WaitForInput:
                 if (Input.GetKeyUp(KeyCode.A))
                 {
-                    OnAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-                    OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
-                    OnAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
-                    OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
-                    OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
-                    OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    StartBattle();
                 }
                 break;
 
-            case GameState.RequestNext:
-                GlobalSingleton.DEBUG("RequestNext");
-                m_State = GameState.Idle;
+            case GameState.ActionForChaanel0:
+                m_ElapsedTime += Time.deltaTime;
+                if (m_ElapsedTime > 3.0f)
+                {
+                    OnAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+                    OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    m_State = GameState.ActionForChaanel1;
+                    m_ElapsedTime = 0;
+                }
+                break;
+
+            case GameState.ActionForChaanel1:
+                m_ElapsedTime += Time.deltaTime;
+                if (m_ElapsedTime > 3.0f)
+                {
+                    OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+                    OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    m_State = GameState.ActionForChaanel2;
+                    m_ElapsedTime = 0;
+                }
+                break;
+                    
+            case GameState.ActionForChaanel2:
+                m_ElapsedTime += Time.deltaTime;
+                if (m_ElapsedTime > 3.0f)
+                {
+                    m_State = GameState.Idle;
+                }
                 break;
         } // End for switch
 	}
@@ -128,24 +133,5 @@ public class BattleEventManager : DummyBattlePlay {
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_CONCENTRATE);
                 break;
         }
-    }
-
-    void OnActionForCharacterFinish() {
-        m_MonsterRef.DoUpdateHP();
-        m_State = GameState.ActionForMonster;
-    }
-
-    void OnActionForMonsterFinish() {
-        // DoUpdateCountDown();
-        m_CharacterRef.DoUpdateHP();
-        m_State = GameState.ValidateVictory;
-    }
-
-    void OnWinAnimationFinish() {
-        m_State = GameState.NextBattle;
-    }
-
-    void OnLoseAnimationFinish() {
-        m_State = GameState.Initization;
     }
 }
