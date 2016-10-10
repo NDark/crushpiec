@@ -29,9 +29,19 @@ public class BattleEventManager : DummyBattlePlay {
     int m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
 
     // override interface
-    public override bool IsInAnimation() 
+    public override bool IsInitialized()
     {
-        return (m_State > GameState.WaitForInput && m_State < GameState.RequestNext);
+        return true;
+    }
+
+    public override bool IsInAnimation()
+    {
+        return true;
+    }
+
+    public override void StartBattle()
+    {
+
     }
 
     public override void Attack(float _Ratio)
@@ -90,9 +100,9 @@ public class BattleEventManager : DummyBattlePlay {
 
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
     {
-        if (_Random) {
-            _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
-        }
+        // if (_Random) {
+        //    _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
+        // }
 
         // re-create
         _CharacterRef.ReCreate();
@@ -115,7 +125,7 @@ public class BattleEventManager : DummyBattlePlay {
                 DoCreateOneCharacter(ref m_CharacterRef, false);
                 DoCreateOneCharacter(ref m_MonsterRef, false);
                 // DoUpdateCountDown();
-                m_CharacterRef.DoChangeModel();                
+                // m_CharacterRef.DoChangeModel(2, MODELTYPE.E_DEFENSE);
 
                 m_State = GameState.Idle;
                 break;
@@ -133,8 +143,8 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.WaitForInput:
                 if (Input.GetKeyUp(KeyCode.A))
                 {
-                    m_CharacterRef.DoChangeModel();
-                    m_MonsterRef.DoChangeModel();
+                    m_CharacterRef.DoChangeModel(2, MODELTYPE.E_ATTACK);
+                    m_MonsterRef.DoChangeModel(0, MODELTYPE.E_CONCENTRATE);
                 }
                 break;
 

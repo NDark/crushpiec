@@ -1,6 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum MODELTYPE
+{
+    E_DEFENSE,
+    E_ATTACK,
+    E_CONCENTRATE,
+
+    E_MODELTYPE_NUM
+}
+
 public class Character : MonoBehaviour {
     // private
     IMesh m_ShareMeshData = null;
@@ -9,7 +18,7 @@ public class Character : MonoBehaviour {
 
     // manager reference 
     static MeshCreator s_ShareMeshCreator = GlobalSingleton.GetMeshCreator();
-    static DataManager s_DataManager = GlobalSingleton.GetDataManager();
+    // static DataManager s_DataManager = GlobalSingleton.GetDataManager();
 
     // public
     public string m_MeshName = "Unit_1";
@@ -26,9 +35,9 @@ public class Character : MonoBehaviour {
             s_ShareMeshCreator.DestroyMesh(ref m_ShareMeshData);
         }
 
-        if (m_ShareUnitData != null){
-            s_DataManager.GetUnitData(m_MeshName, ref m_ShareUnitData);
-        }
+        //if (m_ShareUnitData != null){
+        //   s_DataManager.GetUnitData(m_MeshName, ref m_ShareUnitData);
+        //}
 
         DoRender();
     }
@@ -42,17 +51,31 @@ public class Character : MonoBehaviour {
             m_ShareMeshData.Draw(this.gameObject);
         }
     }
-    int chunkIndex = 0;
-    public void DoChangeModel()
+
+    public void DoChangeModel(int _ChunkIndex, MODELTYPE _ModelType)
     {
+        string model = "body_" + _ChunkIndex;
+        string[] def_models = { "shield" };
+        string[] atk_models = { "axe", "sword" };
+
+        switch (_ModelType)
+        {
+            case MODELTYPE.E_DEFENSE:
+                model = def_models[Random.Range(0, 100) % def_models.Length];
+                break;
+
+            case MODELTYPE.E_ATTACK:
+                model = atk_models[Random.Range(0, 100) % atk_models.Length];
+                break;
+
+            case MODELTYPE.E_CONCENTRATE:
+                break;
+        }
+
         Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
         if (null != Mesh)
         {
-            string[] models = { "body_0", "body_1", "body_2", "shield", "axe", "sword" };
-            chunkIndex = (chunkIndex + 1) % 3 + 1;
-            int index = Random.Range(0, 100) % models.Length;
-           
-            Mesh.ChangeModel("bone"+ chunkIndex, models[index]);
+            Mesh.ChangeModel("bone" + _ChunkIndex, model);
         }
     }
 
@@ -71,9 +94,9 @@ public class Character : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        if (m_ShareUnitData == null) {
-            s_DataManager.GetUnitData(m_MeshName, ref m_ShareUnitData);
-        }
+        // if (m_ShareUnitData == null) {
+        //    s_DataManager.GetUnitData(m_MeshName, ref m_ShareUnitData);
+        //}
 
         if (m_ShareAnimation == null) {
             m_ShareAnimation = GetComponent<TransformAnimation>();

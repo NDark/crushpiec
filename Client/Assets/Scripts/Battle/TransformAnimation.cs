@@ -12,6 +12,7 @@ public enum AnimationState
     Hitted_BreakBone,
     Hitted_Straight,
     Defend,
+    Charge,
 
     InValid
 }
