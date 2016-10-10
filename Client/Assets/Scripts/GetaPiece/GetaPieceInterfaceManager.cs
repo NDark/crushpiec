@@ -1,5 +1,6 @@
 ﻿
 #define DEBUG_JUDGE_VICTORY
+#define DEBUG_WAIT_ANIMATION
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -40,6 +41,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	public Animation m_Victory = null ;
 	public Animation m_Lose = null ;
+	public Animation m_InAttackBlockBackground = null ;
 
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
 
@@ -86,6 +88,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		{
 			m_Player.m_Action[ i ] = m_SelectedActions[ i ] ;
 		}
+
+		m_InAttackBlockBackground.Blend("Language_StartAction_Show");
 
 		m_State = GetaPieceInterfaceState.EnterAnimation ;
 	}
@@ -215,6 +219,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
 
+		m_InAttackBlockBackground.Blend("Language_StartAction_Hide");
 
 
 		m_State = GetaPieceInterfaceState.WaitPlayerInput ;
@@ -240,14 +245,27 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 		m_State = GetaPieceInterfaceState.WaitAnimation ;
 	}
-	
+
+#if DEBUG_WAIT_ANIMATION
+	public bool DEBUG_IsBattleInAnimation = true ;
+#endif 
+// DEBUG_WAIT_ANIMATION
+
 	private void WaitAnimation()
 	{
-		if( m_Battle.IsInAnimation() )
+#if DEBUG_WAIT_ANIMATION
+		if( true == DEBUG_IsBattleInAnimation )
 		{
 			return ;
 		}
-
+#else
+// DEBUG_WAIT_ANIMATION
+		if( true == m_Battle.IsInAnimation() )
+		{
+			return ;
+		}
+#endif 
+// DEBUG_WAIT_ANIMATION
 		m_State = GetaPieceInterfaceState.JudgeVictory ;
 	}
 
@@ -288,6 +306,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			{
 				m_Lose.Blend("Language_Victory_Show");
 			}
+			
+			m_InAttackBlockBackground.Blend("Language_StartAction_Hide");
+
 			m_State = GetaPieceInterfaceState.EndGame ;
 		}
 		else
