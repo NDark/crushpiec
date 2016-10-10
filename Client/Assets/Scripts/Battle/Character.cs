@@ -79,9 +79,14 @@ public class Character : MonoBehaviour {
         }
     }
 
-    public void DoAction(AnimationState _State, float _Delay = 0.0f) {
-        m_ShareAnimation.DoAnimation(this, "Chunk-L-1", "bone1", _State, _Delay);
-        // m_ShareAnimation.ChangeAnimationState(_State, _Delay);
+    public void DoAction(int _ChunkIndex, AnimationState _State, float _Delay = 0.0f) {
+        float dx = gameObject.transform.localScale.x;
+        string sx = (dx > 0.0f) ? "R" : "L";
+        m_ShareAnimation.DoAnimation(this,
+            string.Format("Chunk-{0}-{1}", sx, _ChunkIndex),
+            "bone" + _ChunkIndex,
+            _State,
+            _Delay);
     }
     
     public void DoUpdateHP() {
@@ -95,10 +100,6 @@ public class Character : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        // if (m_ShareUnitData == null) {
-        //    s_DataManager.GetUnitData(m_MeshName, ref m_ShareUnitData);
-        //}
-
         if (m_ShareAnimation == null) {
             // m_ShareAnimation = GetComponent<TransformAnimation>();
             m_ShareAnimation = GetComponent<ChunkAnimation>();

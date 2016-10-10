@@ -24,8 +24,8 @@ public class BattleEventManager : DummyBattlePlay {
     static GameState m_State = GameState.InValid;
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
-    public int m_SeedMax = 8;
-    
+    public GetaPieceUnitDataComponent m_UnitDataRef = null;
+
     static int s_WaitTurnForMonsterMax = 2;
     int m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
 
@@ -55,10 +55,6 @@ public class BattleEventManager : DummyBattlePlay {
 
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
     {
-        // if (_Random) {
-        //    _CharacterRef.m_MeshName = "Unit_" + Random.Range(1, m_SeedMax);
-        // }
-
         // re-create
         _CharacterRef.ReCreate();
         _CharacterRef.DoUpdateHP();
@@ -98,48 +94,13 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.WaitForInput:
                 if (Input.GetKeyUp(KeyCode.A))
                 {
-                    m_CharacterRef.DoChangeModel(1, MODELTYPE.E_ATTACK);
-                    m_CharacterRef.DoAction(AnimationState.Attack, 2.0f);
-                    // m_ShareAnimation.DoAnimation(m_CharacterRef, "Chunk-L-1", "bone1", AnimationState.Attack);
-                    m_MonsterRef.DoChangeModel(0, MODELTYPE.E_CONCENTRATE);
+                    OnAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+                    OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+                    OnAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+                    OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+                    OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
                 }
-                break;
-
-            case GameState.ActionForCharacterAttack:
-                GlobalSingleton.DEBUG("ActionForCharacterAttack");
-                m_CharacterRef.DoAction(AnimationState.Attack);
-                m_MonsterRef.DoAction(AnimationState.Hitted, TransformAnimation.Define.TIME_ATTACK);
-                Invoke("OnActionForCharacterFinish", 1.0f);
-
-                m_State = GameState.WaitForAnimation;
-                break;
-
-            case GameState.ActionForCharacterDefend:
-                GlobalSingleton.DEBUG("ActionForCharacterDefend");
-                m_CharacterRef.DoAction(AnimationState.Defend);
-                Invoke("OnActionForCharacterFinish", 1.0f);
-
-                m_State = GameState.WaitForAnimation;
-                break;
-                
-            case GameState.ActionForMonster:
-                GlobalSingleton.DEBUG("ActionForMonster");
-
-                if (m_WaitTurnForMonsterAttack <= 0)
-                {
-                    m_MonsterRef.DoAction(AnimationState.Attack);
-                    m_CharacterRef.DoAction(AnimationState.Hitted, TransformAnimation.Define.TIME_ATTACK);
-
-                    DoAttck(ref m_MonsterRef, ref m_CharacterRef, Random.Range(0.15f, 0.75f));
-
-                    m_WaitTurnForMonsterAttack = s_WaitTurnForMonsterMax;
-                }
-
-                --m_WaitTurnForMonsterAttack;
-
-                Invoke("OnActionForMonsterFinish", 1.0f);
-
-                m_State = GameState.WaitForAnimation;
                 break;
 
             case GameState.RequestNext:
@@ -148,6 +109,26 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
         } // End for switch
 	}
+
+    void OnAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
+    {
+        switch (_Action)
+        {
+            case ActionKey.Attack:
+                _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_ATTACK);
+                _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 2.0f);
+                break;
+
+            case ActionKey.Defend:
+                _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
+                _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 2.0f);
+                break;
+
+            case ActionKey.Concentrate:
+                _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_CONCENTRATE);
+                break;
+        }
+    }
 
     void OnActionForCharacterFinish() {
         m_MonsterRef.DoUpdateHP();
