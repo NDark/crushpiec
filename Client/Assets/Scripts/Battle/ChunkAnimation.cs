@@ -2,21 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
+/*
+show shield in init (done)
+no defense animation (done)
+after battle change back (done)
+hit animation
+animation speed (changed)
+attack hit event
+ */
 public class ChunkAnimation : MonoBehaviour
 {
-    public class Define
-    {
-        static public float TIME_IDLE = 2.5f;
-        static public float TIME_ATTACK_START = 0.1f;
-        static public float TIME_ATTACK_DO = 0.05f;
-        static public float TIME_ATTACK_END = 0.1f;
-        static public float TIME_HITTED = 0.1f;
-        static public float TIME_DEFEND = 0.2f;
-        static public float TIME_SKIPED = 0.0f;
-
-        static public float TIME_ATTACK = TIME_ATTACK_START + TIME_ATTACK_DO + TIME_ATTACK_END / 2.0f;
-    };
-
     public List<GameObject> ChunkNodeRef;
 
     List<GameObject>[] ChunkMapRef = new List<GameObject>[3];
@@ -31,9 +26,6 @@ public class ChunkAnimation : MonoBehaviour
     IEnumerator PerformChangeAnimationState(int _ChunkIndex, AnimationState _State, float _DelayTime, bool _RestoreTransform)
     {
         yield return new WaitForSeconds(_DelayTime);
-
-        // perform change
-        // m_State = AnimationState.InValid;
         m_ElapsedTime = 0.0f;
 
         if (_RestoreTransform)
@@ -42,7 +34,9 @@ public class ChunkAnimation : MonoBehaviour
 
             foreach (GameObject go in ChunkMapRef[_ChunkIndex])
             {
-                go.transform.parent = RootRef.transform;
+                if (null != go) {
+                    go.transform.parent = RootRef.transform;
+                }
             }
             // ChunkMapRef.Clear();
             ChunkRef[_ChunkIndex] = null;
@@ -71,7 +65,6 @@ public class ChunkAnimation : MonoBehaviour
 
             foreach (GameObject go in ChunkMapRef[_ChunkIndex])
             {
-                // go.transform = null;
                 go.transform.SetParent(ChunkRef[_ChunkIndex].transform);
             }
         }
@@ -111,24 +104,28 @@ public class ChunkAnimation : MonoBehaviour
             Vector3 pos = chunk.transform.position;
             switch (m_State)
             {
-                case AnimationState.Idle:
-                    pos.y = 0.5f * Mathf.Sin(Define.TIME_IDLE * m_ElapsedTime);
-                    chunk.transform.position = pos;
-                    break;
-
                 case AnimationState.Attack:
                     {
                         float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-                        float Speed = dx * Time.deltaTime * 5.0f;
+                        float Speed = dx * Time.deltaTime * 40.0f;
                         chunk.transform.Translate(new Vector3(Speed, 0, 0));
+                    }
+                    break;
+
+                case AnimationState.Hitted:
+                    {
+                        Vector3 originPos = m_TransformRef[i].m_PositionRef;
+                        float dx = Random.Range(-1.0f, 1.0f);
+                        chunk.transform.position =
+                            originPos + (new Vector3(dx, 0, 0));
                     }
                     break;
 
                 case AnimationState.Defend:
                     {
-                        float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-                        float Speed = dx * Time.deltaTime * 2.5f;
-                        chunk.transform.Translate(new Vector3(Speed, 0, 0));
+                        // float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
+                        // float Speed = dx * Time.deltaTime * 2.5f;
+                        // chunk.transform.Translate(new Vector3(Speed, 0, 0));
                     }
                     break;
             }
