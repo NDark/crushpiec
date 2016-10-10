@@ -43,6 +43,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public Animation m_Lose = null ;
 	public Animation m_InAttackBlockBackground = null ;
 
+	public RectTransform m_HitPointPlayer = null ;
+	public RectTransform m_HitPointEnemy = null ;
+
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
 
 
@@ -89,6 +92,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_Player.m_Action[ i ] = m_SelectedActions[ i ] ;
 		}
 
+		CalculateActionsOfEnemy() ;
+
 		m_InAttackBlockBackground.Blend("Language_StartAction_Show");
 
 		m_State = GetaPieceInterfaceState.EnterAnimation ;
@@ -117,8 +122,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		case GetaPieceInterfaceState.EnterRound :
 			EnterRound() ;
 			break ;
-		case GetaPieceInterfaceState.WaitPlayerInput :
-			break ;
+		// case GetaPieceInterfaceState.WaitPlayerInput : break ;
+
 		case GetaPieceInterfaceState.EnterAnimation :
 			EnterAnimation() ;
 			break ;
@@ -128,8 +133,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		case GetaPieceInterfaceState.JudgeVictory :
 			JudgeVictory() ;
 			break ;
-		case GetaPieceInterfaceState.EndGame : 
-			break ;
+		case GetaPieceInterfaceState.EndGame : break ;
 
 
 		}
@@ -276,6 +280,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	// DEBUG_JUDGE_VICTORY
 	private void JudgeVictory()
 	{
+		CalculateDamageFromData() ;
+		UpdateHitPointFromDataOnce() ;
+
 
 		bool isVicotryJudged = false ;
 		bool isPlayerWin = false ;
@@ -415,6 +422,43 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 		return ret ;
 	}
+
+	private void UpdateHitPointFromDataOnce()
+	{
+		// player
+		if( null != m_HitPointPlayer && null != m_Player )
+		{
+			m_HitPointPlayer.sizeDelta = 
+				new Vector2( m_Player.HitPoint * 100.0f / m_Player.MaxHitPoint , 0 ) ;
+		}
+
+		if( null != m_HitPointEnemy && null != m_Enemy )
+		{
+			m_HitPointEnemy.sizeDelta = 
+				new Vector2( m_Enemy.HitPoint * 100.0f / m_Enemy.MaxHitPoint , 0 ) ;
+		}
+
+	}
+
+	private void CalculateDamageFromData()
+	{
+		int damageFromEnemy = m_Player.CalculateSufferDamageAsAWhole( m_Enemy ) ;
+		m_Player.HitPoint -= damageFromEnemy ;
+		int damageFromPlayer = m_Enemy.CalculateSufferDamageAsAWhole( m_Player ) ;
+		m_Enemy.HitPoint -= damageFromPlayer ;
+	}
+
+	private void CalculateActionsOfEnemy()
+	{
+		// copy select actions to player
+		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
+		{
+			m_Enemy.m_Action[ i ] = (ActionKey) Random.Range( 0 , (int) (ActionKey.Concentrate + 1) ) ;
+			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
+		}
+	}
+
+
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
