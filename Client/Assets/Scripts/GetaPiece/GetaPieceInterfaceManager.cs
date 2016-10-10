@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿
+#define DEBUG_JUDGE_VICTORY
+using UnityEngine;
 using System.Collections.Generic;
 
 
@@ -24,6 +26,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public GetaPieceUnitData m_Player = null ;
 	public GetaPieceUnitData m_Enemy = null ;
 
+	public DummyBattlePlay m_Battle = null ;
+
 	public UnityEngine.UI.Image [] m_Component0ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component1ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component2ButtonsImages = null ;
@@ -34,6 +38,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public List<UnityEngine.UI.Image> m_EnergyGrids = new List<UnityEngine.UI.Image>() ;
 	public GameObject m_StartButton = null ;
 
+	public Animation m_Victory = null ;
+	public Animation m_Lose = null ;
 
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
 
@@ -74,6 +80,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public void TryStart()
 	{
 		Debug.Log("TryStart" );
+
 
 		m_State = GetaPieceInterfaceState.EnterAnimation ;
 	}
@@ -225,18 +232,64 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		CostEnergyForUnit( m_Player ) ;
 		SetEnergyGrid( m_Player.Energy , 0 , 0 ) ;
 
+		m_Battle.StartBattle() ;
+
 		m_State = GetaPieceInterfaceState.WaitAnimation ;
 	}
 	
 	private void WaitAnimation()
 	{
+		if( m_Battle.IsInAnimation() )
+		{
+			return ;
+		}
+
 		m_State = GetaPieceInterfaceState.JudgeVictory ;
 	}
-	
+
+#if DEBUG_JUDGE_VICTORY
+	public bool DEBUG_IsVicotryJudged = false ;
+	public bool DEBUG_IsPlayerWin = false ;
+#endif 
+	// DEBUG_JUDGE_VICTORY
 	private void JudgeVictory()
 	{
-		m_State = GetaPieceInterfaceState.EnterRound ;
-		// m_State = GetaPieceInterfaceState.EndGame ;
+
+		bool isVicotryJudged = false ;
+		bool isPlayerWin = false ;
+
+		if( m_Enemy.HitPoint <= 0 )
+		{
+			isVicotryJudged = true ;
+			isPlayerWin = false ;
+		}
+		else if( m_Player.HitPoint <= 0 )
+		{
+			isVicotryJudged = true ;
+			isPlayerWin = true ;
+		}
+
+#if DEBUG_JUDGE_VICTORY
+		isVicotryJudged = DEBUG_IsVicotryJudged ;
+		isPlayerWin = DEBUG_IsPlayerWin ;
+#endif 
+// DEBUG_JUDGE_VICTORY
+		if( isVicotryJudged )
+		{
+			if( isPlayerWin )
+			{
+				m_Victory.Blend("Language_Victory_Show");
+			}
+			else
+			{
+				m_Lose.Blend("Language_Victory_Show");
+			}
+			m_State = GetaPieceInterfaceState.EndGame ;
+		}
+		else
+		{
+			m_State = GetaPieceInterfaceState.EnterRound ;
+		}
 
 	}
 
