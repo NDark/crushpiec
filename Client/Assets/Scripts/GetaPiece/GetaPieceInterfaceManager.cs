@@ -40,6 +40,13 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public UnityEngine.UI.Text m_EnergyLabel = null ;
 	public GameObject m_EnergyGridParent = null ;
 	public List<UnityEngine.UI.Image> m_EnergyGrids = new List<UnityEngine.UI.Image>() ;
+	
+	public GameObject m_EnergyGridBackgroundParent = null ;
+	public List<UnityEngine.UI.Image> m_EnergyBackgrounds = new List<UnityEngine.UI.Image>() ;
+	
+	public UnityEngine.Sprite m_Shield = null ;
+	public UnityEngine.Sprite m_Bottle = null ;
+	
 	public GameObject m_StartButton = null ;
 
 	public Animation m_Victory = null ;
@@ -152,6 +159,13 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			return ;
 		}
 		
+		if( null == m_EnergyGridBackgroundParent )
+		{
+			Debug.LogError("null == m_EnergyGridBackgroundParent");
+			return ;
+		}
+		
+		
 		if( null == m_UnitDataGameObject )
 		{
 			Debug.LogError("null == m_UnitDataGameObject");
@@ -207,6 +221,27 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			
 		}
 		// Debug.Log("m_EnergyGrids.Count=" + m_EnergyGrids.Count );
+		
+		for( int i = 0 ; i < size ; ++i )
+		{
+			trans = m_EnergyGridBackgroundParent.transform.FindChild("E" + i.ToString() ) ;
+			if( null == trans )
+			{
+				Debug.LogWarning("null == trans i=" + i );
+				continue ;
+			}
+			
+			image = trans.gameObject.GetComponent<UnityEngine.UI.Image>() ;
+			if( null != image )
+			{
+				m_EnergyBackgrounds.Add( image ) ;
+			}
+			
+		}
+		// Debug.Log("m_EnergyGrids.Count=" + m_EnergyGrids.Count );
+		
+		
+		
 	}
 
 	private void BattleInitialize()
