@@ -33,7 +33,7 @@ public class ChunkAnimation : MonoBehaviour
         yield return new WaitForSeconds(_DelayTime);
 
         // perform change
-        m_State = AnimationState.InValid;
+        // m_State = AnimationState.InValid;
         m_ElapsedTime = 0.0f;
 
         if (_RestoreTransform)
