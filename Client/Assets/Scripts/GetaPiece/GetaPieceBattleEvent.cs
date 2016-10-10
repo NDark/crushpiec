@@ -7,7 +7,7 @@ public class GetaPieceBattleEvent
 	public string Target {get;set;}
 	public string Value {get;set;}
 
-	public GetaPieceBattleEventType GetType()
+	public GetaPieceBattleEventType GetBattleType()
 	{
 		return GetaPieceBattleEventTypeEnumHelperHub.m_Helper.GetKey( this.Type ) ;
 	}
@@ -24,6 +24,19 @@ public class GetaPieceBattleEvent
 		float ret = 0 ;
 		float.TryParse( this.Value , out ret ) ;
 		return ret ;
+	}
+	
+	public void DEBUG_Print()
+	{
+		Debug.Log( this.ToString() );
+	}
+
+	public string ToString()
+	{
+		return "GetaPieceBattleEvent: " +
+		          "/n Type=" + this.Type +
+		          "/n Target=" + this.Target +
+			"/n Value=" + this.Value ;
 	}
 }
 

@@ -26,6 +26,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public GameObject m_UnitDataGameObject = null ;
 	public GetaPieceUnitData m_Player = null ;
 	public GetaPieceUnitData m_Enemy = null ;
+	public Queue<GetaPieceBattleEvent> m_BattleEvents = null ;
 
 	public DummyBattlePlay m_Battle = null ;
 
@@ -171,6 +172,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_Player.Reset() ;
 			m_Enemy = unitDataComponent.m_Enemy ;
 			m_Enemy.Reset() ;
+
+			m_BattleEvents = unitDataComponent.m_BattleEvent ;
 		}
 
 		for( int i = 0 ; i < m_SelectedActions.Length ; ++i )
@@ -257,6 +260,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	private void WaitAnimation()
 	{
+		CheckBattleEvent() ;
+
+
 #if DEBUG_WAIT_ANIMATION
 		if( true == DEBUG_IsBattleInAnimation )
 		{
@@ -270,6 +276,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 #endif 
 // DEBUG_WAIT_ANIMATION
+
+
 		m_State = GetaPieceInterfaceState.JudgeVictory ;
 	}
 
@@ -458,7 +466,43 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		}
 	}
 
+	private void CheckBattleEvent()
+	{
+		if( null == m_BattleEvents || this.m_BattleEvents.Count <= 0 )
+		{
+			return ;
+		}
 
+		while( this.m_BattleEvents.Count > 0 )
+		{
+			var front = this.m_BattleEvents.Dequeue() ;
+			DoHandleBattleEvent( front ) ;
+		}
+
+	}
+	
+	private void DoHandleBattleEvent( GetaPieceBattleEvent _Event )
+	{
+		if( null == _Event )
+		{
+			return ;
+		}
+
+		_Event.DEBUG_Print() ;
+
+		var type = _Event.GetBattleType() ;
+		switch( type )
+		{
+		case GetaPieceBattleEventType.Damage :
+			{
+				var targetString = _Event.Target ;
+				var damageValue = _Event.AsInt() ;
+
+			}
+			break ;
+		}
+		
+	}
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
