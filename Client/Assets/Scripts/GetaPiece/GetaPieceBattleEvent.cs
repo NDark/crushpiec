@@ -31,7 +31,7 @@ public class GetaPieceBattleEvent
 		Debug.Log( this.ToString() );
 	}
 
-	public string ToString()
+	public override string ToString()
 	{
 		return "GetaPieceBattleEvent: " +
 		          "/n Type=" + this.Type +

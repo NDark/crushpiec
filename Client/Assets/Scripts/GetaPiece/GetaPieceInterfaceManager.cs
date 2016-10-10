@@ -1,6 +1,6 @@
 ﻿
-#define DEBUG_JUDGE_VICTORY
-#define DEBUG_WAIT_ANIMATION
+// #define DEBUG_JUDGE_VICTORY
+// #define DEBUG_WAIT_ANIMATION
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -204,7 +204,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			}
 			
 		}
-		Debug.Log("m_EnergyGrids.Count=" + m_EnergyGrids.Count );
+		// Debug.Log("m_EnergyGrids.Count=" + m_EnergyGrids.Count );
 	}
 
 	private void BattleInitialize()
@@ -495,8 +495,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		{
 		case GetaPieceBattleEventType.Damage :
 			{
-				var targetString = _Event.Target ;
-				var damageValue = _Event.AsInt() ;
+				// var targetString = _Event.Target ;
+				// var damageValue = _Event.AsInt() ;
 
 			}
 			break ;
