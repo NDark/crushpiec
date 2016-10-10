@@ -220,8 +220,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void EnterRound()
 	{
-		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
-		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		CalculateEnergyRefill() ;
 
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
@@ -294,6 +293,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		CalculateDamageFromData() ;
 		UpdateHitPointFromDataOnce() ;
 
+		CalculateDefendSucceed() ;
 
 		bool isVicotryJudged = false ;
 		bool isPlayerWin = false ;
@@ -301,12 +301,12 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		if( m_Enemy.HitPoint <= 0 )
 		{
 			isVicotryJudged = true ;
-			isPlayerWin = false ;
+			isPlayerWin = true ;
 		}
 		else if( m_Player.HitPoint <= 0 )
 		{
 			isVicotryJudged = true ;
-			isPlayerWin = true ;
+			isPlayerWin = false ;
 		}
 
 #if DEBUG_JUDGE_VICTORY
@@ -334,6 +334,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_State = GetaPieceInterfaceState.EnterRound ;
 		}
 
+		// after check hitpoint this turn
+		CalculatePowerAttackEffect() ;
 	}
 
 	private void SetEnergyGrid( int _EnergyNow , int _PreCostValue , int _PreBuffValue )
@@ -459,12 +461,34 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		m_Enemy.HitPoint -= damageFromPlayer ;
 	}
 
+	
+	private void CalculateDefendSucceed()
+	{
+		int energyBuff = m_Player.CalculateEnergyBuffAsAWhole( m_Enemy ) ;
+		m_Player.Energy += energyBuff ;
+		energyBuff = m_Enemy.CalculateEnergyBuffAsAWhole( m_Player ) ;
+		m_Enemy.Energy += energyBuff ;
+	}
+
 	private void CalculateActionsOfEnemy()
 	{
+		int currentEnergy = m_Enemy.Energy ;
 		// copy select actions to player
 		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
 		{
 			m_Enemy.m_Action[ i ] = (ActionKey) Random.Range( 0 , (int) (ActionKey.Concentrate + 1) ) ;
+
+			if( m_Enemy.m_Action[ i ]  == ActionKey.Attack && currentEnergy - GetaPieceConst.COST_ENERGY_ATTACK < 0 )
+			{
+				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			}
+			else if( m_Enemy.m_Action[ i ]  == ActionKey.Defend && currentEnergy - GetaPieceConst.COST_ENERGY_DEFEND < 0 )
+			{
+				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			}
+
+			// m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
 	}
@@ -518,6 +542,39 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_ComponentSwordImages[ i ].color = (m_Player.m_PowerAttack) ? Color.red : Color.white ;
 		}
 	}
+
+	private void CalculateEnergyRefill()
+	{
+		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+	}
+
+	private void CalculatePowerAttackEffect()
+	{
+		bool isPowerAttack = false ;
+		for( int i = 0 ; i < m_Player.m_Action.Length ; ++i )
+		{
+			if( m_Player.m_Action[ i ] == ActionKey.Concentrate )
+			{
+				isPowerAttack = true ;
+			}
+		}
+		m_Player.m_PowerAttack = isPowerAttack ;
+		Debug.Log("m_Player.m_PowerAttack="+m_Player.m_PowerAttack);
+
+		isPowerAttack = false ;
+		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
+		{
+			if( m_Enemy.m_Action[ i ] == ActionKey.Concentrate )
+			{
+				isPowerAttack = true ;
+			}
+		}
+		m_Enemy.m_PowerAttack = isPowerAttack ;
+		Debug.Log("m_Enemy.m_PowerAttack="+m_Enemy.m_PowerAttack);
+
+	}
+
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
