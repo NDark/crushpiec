@@ -33,6 +33,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public UnityEngine.UI.Image [] m_Component0ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component1ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component2ButtonsImages = null ;
+	public UnityEngine.UI.Image [] m_ComponentSwordImages = null ;
 	
 	public UnityEngine.UI.Image m_EnergyLabelBackground = null ;
 	public UnityEngine.UI.Text m_EnergyLabel = null ;
@@ -225,6 +226,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
+
+		CheckPowerAttackPicture() ;
 
 		m_InAttackBlockBackground.Blend("Language_StartAction_Hide");
 
@@ -502,6 +505,18 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			break ;
 		}
 		
+	}
+	
+	private void CheckPowerAttackPicture() 
+	{
+		Debug.Log("m_Player.m_PowerAttack" + m_Player.m_PowerAttack);
+		for( int i = 0 
+		; i < this.m_Player.m_Action.Length 
+		&& i < m_ComponentSwordImages.Length 
+		; ++i )
+		{
+			m_ComponentSwordImages[ i ].color = (m_Player.m_PowerAttack) ? Color.red : Color.white ;
+		}
 	}
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
