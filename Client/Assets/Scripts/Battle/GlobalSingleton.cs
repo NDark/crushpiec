@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class GlobalSingleton
 {
@@ -42,5 +44,35 @@ public static class GlobalSingleton
             }
         }
         return m_FxManager;
+    }
+
+    static Dictionary<string, GameObject> m_CacheMap = new Dictionary<string, GameObject>();
+    public static GameObject Find(string _name, bool _findInactive = false)
+    {
+        GameObject ret = null;
+        if (false == m_CacheMap.TryGetValue(_name, out ret))
+        {
+            ret = GameObject.Find(_name);
+            if (ret == null && _findInactive == true)
+            {
+                ret = Array.Find
+                    (
+                        Resources.FindObjectsOfTypeAll<GameObject>() as GameObject[],
+                        go => go.name == _name
+                    );
+            }
+
+            // cache game object
+            if (null != ret)
+            {
+                m_CacheMap.Add(_name, ret);
+            }
+        }
+
+        if (null == ret)
+        {
+            DEBUG("Cannot find game object by name = " + _name);
+        }
+        return ret;
     }
 }

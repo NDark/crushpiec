@@ -1,9 +1,9 @@
 name:Template8x8;
 chunk:
 [	
-	#bone1|body_0|0, 3,0
-	#bone2|body_1|0, 0,0
-	#bone3|body_2|0,-3,0
+	#bone0|body_0|0, 3,0
+	#bone1|body_1|0, 0,0
+	#bone2|body_2|0,-3,0
 ];
 body_0:0,0,0:1,1:12,4:
 0,0,0,40,40,40,40,40,40,0,0,0,

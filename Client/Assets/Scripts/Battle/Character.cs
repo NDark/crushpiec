@@ -14,7 +14,7 @@ public class Character : MonoBehaviour {
     // private
     IMesh m_ShareMeshData = null;
     UnitData m_ShareUnitData = null;
-    TransformAnimation m_ShareAnimation = null;
+    ChunkAnimation m_ShareAnimation = null;
 
     // manager reference 
     static MeshCreator s_ShareMeshCreator = GlobalSingleton.GetMeshCreator();
@@ -80,7 +80,8 @@ public class Character : MonoBehaviour {
     }
 
     public void DoAction(AnimationState _State, float _Delay = 0.0f) {
-        m_ShareAnimation.ChangeAnimationState(_State, _Delay);
+        m_ShareAnimation.DoAnimation(this, "Chunk-L-1", "bone1", _State, _Delay);
+        // m_ShareAnimation.ChangeAnimationState(_State, _Delay);
     }
     
     public void DoUpdateHP() {
@@ -99,7 +100,8 @@ public class Character : MonoBehaviour {
         //}
 
         if (m_ShareAnimation == null) {
-            m_ShareAnimation = GetComponent<TransformAnimation>();
+            // m_ShareAnimation = GetComponent<TransformAnimation>();
+            m_ShareAnimation = GetComponent<ChunkAnimation>();
         }
     }
 	
