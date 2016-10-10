@@ -38,13 +38,14 @@ public class ChunkAnimation : MonoBehaviour
 
         if (_RestoreTransform)
         {
+            m_TransformRef.Restore();
+
             foreach (GameObject go in ChunkMapRef)
             {
                 go.transform.parent = RootRef.transform;
             }
             // ChunkMapRef.Clear();
             ChunkRef = null;
-            m_TransformRef.Restore();
         }
     }
 
@@ -117,7 +118,7 @@ public class ChunkAnimation : MonoBehaviour
             case AnimationState.Attack:
                 {
                     float dx = -ChunkRef.transform.localScale.x / ChunkRef.transform.localScale.x;
-                    float Speed = -dx * Time.deltaTime * 10.0f;
+                    float Speed = -dx * Time.deltaTime * 5.0f;
                     ChunkRef.transform.Translate(new Vector3(Speed, 0, 0)); 
                 }
                 break;
