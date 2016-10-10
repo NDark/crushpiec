@@ -34,6 +34,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public UnityEngine.UI.Image [] m_Component1ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_Component2ButtonsImages = null ;
 	public UnityEngine.UI.Image [] m_ComponentSwordImages = null ;
+	public Animation [] m_ComponentSwordAnimations = null ;
 	
 	public UnityEngine.UI.Image m_EnergyLabelBackground = null ;
 	public UnityEngine.UI.Text m_EnergyLabel = null ;
@@ -537,9 +538,15 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		for( int i = 0 
 		; i < this.m_Player.m_Action.Length 
 		&& i < m_ComponentSwordImages.Length 
+		    && i < m_ComponentSwordAnimations.Length 
 		; ++i )
 		{
 			m_ComponentSwordImages[ i ].color = (m_Player.m_PowerAttack) ? Color.red : Color.white ;
+			if( true == m_Player.m_PowerAttack )
+			{
+				m_ComponentSwordAnimations[ i ].Blend("GetaPiece_AttackIconVibration");
+			}
+			
 		}
 	}
 
