@@ -84,7 +84,7 @@ public class Character : MonoBehaviour {
         string sx = (dx > 0.0f) ? "R" : "L";
         m_ShareAnimation.DoAnimation(this,
             string.Format("Chunk-{0}-{1}", sx, _ChunkIndex),
-            "bone" + _ChunkIndex,
+            _ChunkIndex,
             _State,
             _Delay);
     }
