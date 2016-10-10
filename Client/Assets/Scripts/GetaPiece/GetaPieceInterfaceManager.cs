@@ -45,7 +45,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public List<UnityEngine.UI.Image> m_EnergyBackgrounds = new List<UnityEngine.UI.Image>() ;
 	
 	public UnityEngine.Sprite m_Shield = null ;
-	public UnityEngine.Sprite m_Bottle = null ;
+	public UnityEngine.Sprite m_Clock = null ;
 	
 	public GameObject m_StartButton = null ;
 
