@@ -67,7 +67,7 @@ public class ChunkAnimation : MonoBehaviour
          && Mesh.Chunks.ContainsKey(BoneIndex))
         {
             ChunkMapRef[_ChunkIndex] = Mesh.Chunks[BoneIndex];
-            GlobalSingleton.DEBUG("Ready to change parent:"+ ChunkMapRef[_ChunkIndex].Count);
+            // GlobalSingleton.DEBUG("Ready to change parent:"+ ChunkMapRef[_ChunkIndex].Count);
 
             foreach (GameObject go in ChunkMapRef[_ChunkIndex])
             {
@@ -125,6 +125,11 @@ public class ChunkAnimation : MonoBehaviour
                     break;
 
                 case AnimationState.Defend:
+                    {
+                        float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
+                        float Speed = dx * Time.deltaTime * 2.5f;
+                        chunk.transform.Translate(new Vector3(Speed, 0, 0));
+                    }
                     break;
             }
         }

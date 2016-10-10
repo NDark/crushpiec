@@ -44,7 +44,7 @@ public class BattleEventManager : DummyBattlePlay {
     public override void StartBattle()
     {
         OnAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-        // OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+        OnReAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
 
         m_State = GameState.ActionForChaanel_L_0;
         m_ElapsedTime = 0.0f;
@@ -91,7 +91,7 @@ public class BattleEventManager : DummyBattlePlay {
                 if (m_ElapsedTime > 2.0f)
                 {
                     OnAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
-                    // OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    OnReAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
                     m_State = GameState.ActionForChaanel_L_1;
                     m_ElapsedTime = 0;
                 }
@@ -102,7 +102,7 @@ public class BattleEventManager : DummyBattlePlay {
                 if (m_ElapsedTime > 2.0f)
                 {
                     OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
-                    // OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    OnReAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
                     m_State = GameState.ActionForChaanel_L_2;
                     m_ElapsedTime = 0;
                 }
@@ -112,8 +112,8 @@ public class BattleEventManager : DummyBattlePlay {
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > 2.0f)
                 {
-                    // OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+                    OnReAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
                     m_State = GameState.ActionForChaanel_R_0;
                     m_ElapsedTime = 0;
                 }
@@ -122,8 +122,8 @@ public class BattleEventManager : DummyBattlePlay {
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > 2.0f)
                 {
-                    // OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    OnReAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
                     m_State = GameState.ActionForChaanel_R_1;
                     m_ElapsedTime = 0;
                 }
@@ -133,8 +133,8 @@ public class BattleEventManager : DummyBattlePlay {
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > 2.0f)
                 {
-                    // OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    OnReAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     m_State = GameState.ActionForChaanel_R_2;
                     m_ElapsedTime = 0;
                 }
@@ -152,6 +152,7 @@ public class BattleEventManager : DummyBattlePlay {
 
     void OnAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
     {
+        GlobalSingleton.DEBUG(_CharRef.name + "," + _ChunkIndex + "," + _Action);
         switch (_Action)
         {
             case ActionKey.Attack:
@@ -161,11 +162,22 @@ public class BattleEventManager : DummyBattlePlay {
 
             case ActionKey.Defend:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
-                _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
+                // _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
 
             case ActionKey.Concentrate:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_CONCENTRATE);
+                break;
+        }
+    }
+
+    void OnReAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
+    {
+        switch (_Action)
+        {
+            case ActionKey.Defend:
+                _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
+                _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
         }
     }

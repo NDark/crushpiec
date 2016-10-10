@@ -69,12 +69,14 @@ public class Character : MonoBehaviour {
                 break;
 
             case MODELTYPE.E_CONCENTRATE:
+                model = "body_" + _ChunkIndex;
                 break;
         }
 
         Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
         if (null != Mesh)
         {
+            // GlobalSingleton.DEBUG("ChangeModel : " + _ChunkIndex + "," + model);
             Mesh.ChangeModel("bone" + _ChunkIndex, model);
         }
     }

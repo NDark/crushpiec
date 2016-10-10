@@ -79,12 +79,16 @@ public class Mesh_VoxelChunk : IMesh
         {
             AttachModel(chunk, model, c);
         }
+        else
+        {
+            GlobalSingleton.ERROR("Find no model:" + chunk + "," + model);
+        }
     }
     
     public void AttachModel(string chunk, string model, Chunk c)
     {
-        if (m_ChunkCache.ContainsKey(chunk) && c.Model == model)
-            return;
+        // if (m_ChunkCache.ContainsKey(chunk) && c.Model == model)
+        //    return;
 
         List<GameObject> Purge;
         if (m_ChunkCache.TryGetValue(chunk, out Purge))
