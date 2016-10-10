@@ -219,8 +219,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void EnterRound()
 	{
-		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
-		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		CalculateEnergyRefill() ;
+
 
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
@@ -299,12 +299,12 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		if( m_Enemy.HitPoint <= 0 )
 		{
 			isVicotryJudged = true ;
-			isPlayerWin = false ;
+			isPlayerWin = true ;
 		}
 		else if( m_Player.HitPoint <= 0 )
 		{
 			isVicotryJudged = true ;
-			isPlayerWin = true ;
+			isPlayerWin = false ;
 		}
 
 #if DEBUG_JUDGE_VICTORY
@@ -472,6 +472,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
 		{
 			m_Enemy.m_Action[ i ] = (ActionKey) Random.Range( 0 , (int) (ActionKey.Concentrate + 1) ) ;
+			m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
 	}
@@ -512,6 +513,12 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			break ;
 		}
 		
+	}
+
+	private void CalculateEnergyRefill()
+	{
+		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
+		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 	}
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
