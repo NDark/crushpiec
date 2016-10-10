@@ -221,7 +221,6 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	{
 		CalculateEnergyRefill() ;
 
-
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
@@ -332,6 +331,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_State = GetaPieceInterfaceState.EnterRound ;
 		}
 
+		// after check hitpoint this turn
+		CalculatePowerAttackEffect() ;
 	}
 
 	private void SetEnergyGrid( int _EnergyNow , int _PreCostValue , int _PreBuffValue )
@@ -468,11 +469,23 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	private void CalculateActionsOfEnemy()
 	{
+		int currentEnergy = m_Enemy.Energy ;
 		// copy select actions to player
 		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
 		{
 			m_Enemy.m_Action[ i ] = (ActionKey) Random.Range( 0 , (int) (ActionKey.Concentrate + 1) ) ;
-			m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+
+			if( m_Enemy.m_Action[ i ]  == ActionKey.Attack && currentEnergy - GetaPieceConst.COST_ENERGY_ATTACK < 0 )
+			{
+				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			}
+			else if( m_Enemy.m_Action[ i ]  == ActionKey.Defend && currentEnergy - GetaPieceConst.COST_ENERGY_DEFEND < 0 )
+			{
+				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			}
+
+			// m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
 	}
@@ -520,6 +533,33 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 	}
+
+	private void CalculatePowerAttackEffect()
+	{
+		bool isPowerAttack = false ;
+		for( int i = 0 ; i < m_Player.m_Action.Length ; ++i )
+		{
+			if( m_Player.m_Action[ i ] == ActionKey.Concentrate )
+			{
+				isPowerAttack = true ;
+			}
+		}
+		m_Player.m_PowerAttack = isPowerAttack ;
+		Debug.Log("m_Player.m_PowerAttack="+m_Player.m_PowerAttack);
+
+		isPowerAttack = false ;
+		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
+		{
+			if( m_Enemy.m_Action[ i ] == ActionKey.Concentrate )
+			{
+				isPowerAttack = true ;
+			}
+		}
+		m_Enemy.m_PowerAttack = isPowerAttack ;
+		Debug.Log("m_Enemy.m_PowerAttack="+m_Enemy.m_PowerAttack);
+
+	}
+
 
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
