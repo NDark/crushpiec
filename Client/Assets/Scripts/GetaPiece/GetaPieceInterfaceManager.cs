@@ -291,6 +291,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		CalculateDamageFromData() ;
 		UpdateHitPointFromDataOnce() ;
 
+		CalculateDefendSucceed() ;
 
 		bool isVicotryJudged = false ;
 		bool isPlayerWin = false ;
@@ -454,6 +455,15 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		m_Player.HitPoint -= damageFromEnemy ;
 		int damageFromPlayer = m_Enemy.CalculateSufferDamageAsAWhole( m_Player ) ;
 		m_Enemy.HitPoint -= damageFromPlayer ;
+	}
+
+	
+	private void CalculateDefendSucceed()
+	{
+		int energyBuff = m_Player.CalculateEnergyBuffAsAWhole( m_Enemy ) ;
+		m_Player.Energy += energyBuff ;
+		energyBuff = m_Enemy.CalculateEnergyBuffAsAWhole( m_Player ) ;
+		m_Enemy.Energy += energyBuff ;
 	}
 
 	private void CalculateActionsOfEnemy()
