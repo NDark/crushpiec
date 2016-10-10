@@ -47,6 +47,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public int m_LastEnergyValue = 0 ;
 	public int m_TimeRefillNum = 0 ;
 	public int m_DefendSucceedNum = 0 ;
+	public bool m_IsHideEnergyInThisTurn = false ;
 	
 	public UnityEngine.Sprite m_Shield = null ;
 	public UnityEngine.Sprite m_Clock = null ;
@@ -273,6 +274,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
 		
 		UpdateEnergyBackground() ;
+		m_IsHideEnergyInThisTurn = false ;
 
 		CheckPowerAttackPicture() ;
 
@@ -452,6 +454,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		SetColorForSelectComponentButtons( _Images , keyIndex ) ;
 		
 		SetAction( _ComponentIndex , _Action ) ;
+		
+		HideAllEnergyBackground() ;
 	}
 
 	private void SetColorForSelectComponentButtons( UnityEngine.UI.Image [] _ImageArray , int _SelectIndex )
@@ -540,7 +544,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
 			}
 
-			// m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			m_Enemy.m_Action[ i ] = ActionKey.Defend ;
 
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
@@ -678,10 +682,17 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			return ;
 		}
 		
+		if( true == m_IsHideEnergyInThisTurn )
+		{
+			return ;
+		}
+		
 		for( int i = 0 ; i < m_EnergyBackgrounds.Count ; ++i )
 		{
 			m_EnergyBackgrounds[ i ].enabled = false ;
 		}
+		
+		m_IsHideEnergyInThisTurn = true ;
 	}
 	
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
