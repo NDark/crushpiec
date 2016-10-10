@@ -129,6 +129,7 @@ public class GetaPieceUnitData
 		int ret = 0 ;
 		for( int i = 0 ; i < m_Action.Length  ; ++i )
 		{
+			// Debug.Log("m_Action[ i ]=" + m_Action[ i ]  ) ;
 			switch( m_Action[ i ] )
 			{
 			case ActionKey.Attack :

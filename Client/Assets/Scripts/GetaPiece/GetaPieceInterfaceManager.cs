@@ -81,6 +81,11 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	{
 		Debug.Log("TryStart" );
 
+		// copy select actions to player
+		for( int i = 0 ; i < m_SelectedActions.Length ; ++i )
+		{
+			m_Player.m_Action[ i ] = m_SelectedActions[ i ] ;
+		}
 
 		m_State = GetaPieceInterfaceState.EnterAnimation ;
 	}
@@ -203,10 +208,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void EnterRound()
 	{
-		Debug.Log("m_Player.Energy" + m_Player.Energy );
 		m_Player.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
 		m_Enemy.Energy += GetaPieceConst.ENERGY_REFILL_EACH_TURN ;
-		Debug.Log("m_Player.Energy" + m_Player.Energy );
 
 		PressComponentButton( 0 , ActionKey.Concentrate ) ;
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
@@ -228,6 +231,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	private void EnterAnimation()
 	{
+
 		// calculate cost 
 		CostEnergyForUnit( m_Player ) ;
 		SetEnergyGrid( m_Player.Energy , 0 , 0 ) ;
