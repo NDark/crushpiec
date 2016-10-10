@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GetaPieceUnitDataComponent : MonoBehaviour 
 {
 	public GetaPieceUnitData m_Player = new GetaPieceUnitData() ;
 	public GetaPieceUnitData m_Enemy = new GetaPieceUnitData() ;
+	public Queue<GetaPieceBattleEvent> m_BattleEvent = new Queue<GetaPieceBattleEvent>() ;
 
 	// Use this for initialization
 	void Start () {
