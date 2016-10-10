@@ -25,6 +25,7 @@ public enum GameState
 
 public class BattleEventManager : DummyBattlePlay {
     static GameState m_State = GameState.InValid;
+    static float AnimationTime = 0.5f;
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
     public GetaPieceUnitDataComponent m_UnitDataRef = null;
@@ -43,9 +44,15 @@ public class BattleEventManager : DummyBattlePlay {
 
     public override void StartBattle()
     {
-        OnAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-        OnReAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+        OnInitAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+        OnInitAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+        OnInitAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+        OnInitAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+        OnInitAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+        OnInitAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
 
+        OnAction(m_CharacterRef, m_MonsterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+        
         m_State = GameState.ActionForChaanel_L_0;
         m_ElapsedTime = 0.0f;
     }
@@ -76,6 +83,12 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
 
             case GameState.Idle:
+                m_CharacterRef.DoChangeModel(0, MODELTYPE.E_CONCENTRATE);
+                m_CharacterRef.DoChangeModel(1, MODELTYPE.E_CONCENTRATE);
+                m_CharacterRef.DoChangeModel(2, MODELTYPE.E_CONCENTRATE);
+                m_MonsterRef.DoChangeModel(0, MODELTYPE.E_CONCENTRATE);
+                m_MonsterRef.DoChangeModel(1, MODELTYPE.E_CONCENTRATE);
+                m_MonsterRef.DoChangeModel(2, MODELTYPE.E_CONCENTRATE);
                 m_State = GameState.WaitForInput;
                 break;
 
@@ -88,10 +101,10 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_L_0:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > AnimationTime)
                 {
-                    OnAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
-                    OnReAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    OnAction(m_CharacterRef, m_MonsterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+                    // OnReAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
                     m_State = GameState.ActionForChaanel_L_1;
                     m_ElapsedTime = 0;
                 }
@@ -99,10 +112,10 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_L_1:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > AnimationTime)
                 {
-                    OnAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
-                    OnReAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    OnAction(m_CharacterRef, m_MonsterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+                    // OnReAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
                     m_State = GameState.ActionForChaanel_L_2;
                     m_ElapsedTime = 0;
                 }
@@ -110,20 +123,20 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_L_2:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > AnimationTime)
                 {
-                    OnAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
-                    OnReAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+                    OnAction(m_MonsterRef, m_CharacterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+                    // OnReAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
                     m_State = GameState.ActionForChaanel_R_0;
                     m_ElapsedTime = 0;
                 }
                 break;
             case GameState.ActionForChaanel_R_0:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > AnimationTime)
                 {
-                    OnAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
-                    OnReAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+                    OnAction(m_MonsterRef, m_CharacterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+                    // OnReAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
                     m_State = GameState.ActionForChaanel_R_1;
                     m_ElapsedTime = 0;
                 }
@@ -131,10 +144,10 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_R_1:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > AnimationTime)
                 {
-                    OnAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
-                    OnReAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+                    OnAction(m_MonsterRef, m_CharacterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+                    // OnReAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     m_State = GameState.ActionForChaanel_R_2;
                     m_ElapsedTime = 0;
                 }
@@ -142,7 +155,7 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_R_2:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 2.0f)
+                if (m_ElapsedTime > 4.0f * AnimationTime)
                 {
                     m_State = GameState.Idle;
                 }
@@ -150,14 +163,15 @@ public class BattleEventManager : DummyBattlePlay {
         } // End for switch
 	}
 
-    void OnAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
+    void OnAction(Character _CharRef, Character _OtherRef, int _ChunkIndex, ActionKey _Action)
     {
         GlobalSingleton.DEBUG(_CharRef.name + "," + _ChunkIndex + "," + _Action);
         switch (_Action)
         {
             case ActionKey.Attack:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_ATTACK);
-                _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 2.0f);
+                _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 1.2f);
+                _OtherRef.DoAction(_ChunkIndex, AnimationState.Hitted, 1.2f);
                 break;
 
             case ActionKey.Defend:
@@ -171,13 +185,13 @@ public class BattleEventManager : DummyBattlePlay {
         }
     }
 
-    void OnReAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
+    void OnInitAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
     {
         switch (_Action)
         {
             case ActionKey.Defend:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
-                _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
+                // _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
         }
     }
