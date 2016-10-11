@@ -544,7 +544,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
 			}
 
-			m_Enemy.m_Action[ i ] = ActionKey.Defend ;
+			// m_Enemy.m_Action[ i ] = ActionKey.Defend ;
 
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
