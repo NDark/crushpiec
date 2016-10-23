@@ -257,12 +257,17 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 	private void BattleInitialize()
 	{
+		m_Battle.StartInitialize() ;
 		m_State = GetaPieceInterfaceState.WaitBattleInitialize ;
 	}
 	
 	private void WaitBattleInitialize()
 	{
-		m_State = GetaPieceInterfaceState.EnterRound ;
+		if( m_Battle.IsInitialized() )
+		{
+			m_State = GetaPieceInterfaceState.EnterRound ;
+		}
+		
 	}
 	
 	private void EnterRound()

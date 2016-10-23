@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/**
+@date 20161023 by NDark 
+. move code from Start() to StartInitialize()
+
+*/
+using UnityEngine;
 using System.Collections;
 
 public enum GameState
@@ -31,6 +36,29 @@ public class BattleEventManager : DummyBattlePlay {
     public GetaPieceUnitDataComponent m_UnitDataRef = null;
     float m_ElapsedTime = 0.0f;
      
+	public override void StartInitialize()
+	{
+		m_CharacterRef = GameObject.Find("Unit_Character").GetComponent<Character>();
+		m_MonsterRef = GameObject.Find("Unit_Monster").GetComponent<Character>();
+		
+		if( null == m_CharacterRef )
+		{
+			Debug.LogError("null == m_CharacterRef");
+		}
+		
+		if( null == m_MonsterRef )
+		{
+			Debug.LogError("null == m_MonsterRef");
+		}
+		
+		if( null != m_CharacterRef 
+			&& null != m_MonsterRef )
+		{
+			m_State = GameState.Initization ;
+		}
+		
+	}
+	
     // override interface
     public override bool IsInitialized()
     {
@@ -66,10 +94,8 @@ public class BattleEventManager : DummyBattlePlay {
 
     // Use this for initialization
     void Start () {
-        m_CharacterRef = GameObject.Find("Unit_Character").GetComponent<Character>();
-        m_MonsterRef = GameObject.Find("Unit_Monster").GetComponent<Character>();
-
-        m_State = GameState.Initization;
+        
+        
     }
 
     // Update is called once per frame

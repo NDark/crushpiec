@@ -1,8 +1,18 @@
-﻿using UnityEngine;
+﻿/**
+@date 20161023 by NDark 
+. add class method StartInitialize()
+
+*/
+using UnityEngine;
 using System.Collections;
 
 public class DummyBattlePlay : MonoBehaviour 
 {
+	public virtual void StartInitialize()
+	{
+	
+	}
+	
 	public virtual bool IsInitialized() 
 	{
 		return false ;
