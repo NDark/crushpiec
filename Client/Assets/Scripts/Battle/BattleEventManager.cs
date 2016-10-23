@@ -5,6 +5,7 @@
 . modify start from ActionForChaanel_R_0 at StartBattle()
 . modify code to continue GameState.Idle at GameState.ActionForChaanel_L_2:
 . modify code to continue GameState.ActionForChaanel_L_0 at GameState.ActionForChaanel_R_2:
+. add class method IsActionNeedsPlayAnimation() to check skip animation().
 
 */
 using UnityEngine;
@@ -132,7 +133,9 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_L_0:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > AnimationTime)
+                if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[1] , m_UnitDataRef.m_Enemy.m_Action[1] )
+                )
                 {
                     OnAction(m_CharacterRef, m_MonsterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
                     // OnReAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
@@ -143,7 +146,9 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_L_1:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > AnimationTime)
+                if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[2] , m_UnitDataRef.m_Enemy.m_Action[2] )
+                )
                 {
                     OnAction(m_CharacterRef, m_MonsterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
                     // OnReAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
@@ -163,7 +168,9 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
             case GameState.ActionForChaanel_R_0:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > AnimationTime)
+                if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[1] , m_UnitDataRef.m_Player.m_Action[1] )
+                )
                 {
                     OnAction(m_MonsterRef, m_CharacterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
                     // OnReAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
@@ -174,7 +181,9 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_R_1:
                 m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > AnimationTime)
+                if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[2] , m_UnitDataRef.m_Player.m_Action[2] )
+                )
                 {
                     OnAction(m_MonsterRef, m_CharacterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
                     // OnReAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
@@ -185,7 +194,9 @@ public class BattleEventManager : DummyBattlePlay {
 
             case GameState.ActionForChaanel_R_2:
 				m_ElapsedTime += Time.deltaTime;
-				if (m_ElapsedTime > AnimationTime)
+				if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[0] , m_UnitDataRef.m_Enemy.m_Action[0] )
+				)
 				{
 					OnAction(m_CharacterRef, m_MonsterRef, 0
 						, m_UnitDataRef.m_Player.m_Action[0]);
@@ -218,6 +229,16 @@ public class BattleEventManager : DummyBattlePlay {
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_CONCENTRATE);
                 break;
         }
+    }
+    
+	bool IsActionNeedsPlayAnimation( ActionKey _AttackAction , ActionKey _DefenseAction )
+    {
+    	bool ret = false ;
+    	if( _AttackAction == ActionKey.Attack )
+    	{
+    		ret = true ;
+    	}
+    	return ret ;
     }
 
     void OnInitAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
