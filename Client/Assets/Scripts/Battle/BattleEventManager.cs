@@ -1,6 +1,10 @@
 ﻿/**
 @date 20161023 by NDark 
 . move code from Start() to StartInitialize()
+. remove useless GameState.NextBattle.
+. modify start from ActionForChaanel_R_0 at StartBattle()
+. modify code to continue GameState.Idle at GameState.ActionForChaanel_L_2:
+. modify code to continue GameState.ActionForChaanel_L_0 at GameState.ActionForChaanel_R_2:
 
 */
 using UnityEngine;
@@ -9,7 +13,7 @@ using System.Collections;
 public enum GameState
 {
     Initization,
-    NextBattle,
+    
     Idle,
     WaitForInput,
     WaitForAnimation,
@@ -79,9 +83,10 @@ public class BattleEventManager : DummyBattlePlay {
         OnInitAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
         OnInitAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
 
-        OnAction(m_CharacterRef, m_MonsterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-        
-        m_State = GameState.ActionForChaanel_L_0;
+		OnAction(m_MonsterRef, m_CharacterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+		
+		m_State = GameState.ActionForChaanel_R_0;
+		
         m_ElapsedTime = 0.0f;
     }
 
@@ -148,14 +153,13 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
 
             case GameState.ActionForChaanel_L_2:
-                m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > AnimationTime)
-                {
-                    OnAction(m_MonsterRef, m_CharacterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
-                    // OnReAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-                    m_State = GameState.ActionForChaanel_R_0;
-                    m_ElapsedTime = 0;
-                }
+			
+				m_ElapsedTime += Time.deltaTime;
+				if (m_ElapsedTime > 4.0f * AnimationTime)
+				{
+					m_State = GameState.Idle;
+				}
+				
                 break;
             case GameState.ActionForChaanel_R_0:
                 m_ElapsedTime += Time.deltaTime;
@@ -180,11 +184,16 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
 
             case GameState.ActionForChaanel_R_2:
-                m_ElapsedTime += Time.deltaTime;
-                if (m_ElapsedTime > 4.0f * AnimationTime)
-                {
-                    m_State = GameState.Idle;
-                }
+				m_ElapsedTime += Time.deltaTime;
+				if (m_ElapsedTime > AnimationTime)
+				{
+					OnAction(m_CharacterRef, m_MonsterRef, 0
+						, m_UnitDataRef.m_Player.m_Action[0]);
+					// OnReAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+					m_State = GameState.ActionForChaanel_L_0;
+					m_ElapsedTime = 0;
+				}
+				            
                 break;
         } // End for switch
 	}
