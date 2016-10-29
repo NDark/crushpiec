@@ -5,6 +5,8 @@
 . add class method StartMorphingModel()
 . add class method UpdateMorphing()
 . add class method isMorphingEnded()
+. add class method GenerateChunkKeyFromIndex()
+. add class method GenerateModelStringFromTemplateSetting()
 
 */
 using UnityEngine;
@@ -40,6 +42,7 @@ public class Character : MonoBehaviour {
     public Attribute def { get { return m_ShareUnitData.m_DEF; } }
     public IMesh mesh { get { return m_ShareMeshData; } }
 
+	// the morphing animation controller, will automatically been created in StartMorphingModel()
 	Dictionary<int,MorphingStruct> m_MorphingData =
 		 new Dictionary<int, MorphingStruct>() ;
 	
@@ -86,31 +89,13 @@ public class Character : MonoBehaviour {
 		morphData.isInMorphing = true ;
 		
 		
-		string modelstr = "body_" + _ChunkIndex;
-		string[] def_models = { "shield" };
-		string[] atk_models = { "axe", "sword" };
-		
-		switch (_ModelType)
-		{
-		case MODELTYPE.E_DEFENSE:
-			modelstr = def_models[Random.Range(0, 100) % def_models.Length];
-			break;
-			
-		case MODELTYPE.E_ATTACK:
-			modelstr = atk_models[Random.Range(0, 100) % atk_models.Length];
-			break;
-			
-		case MODELTYPE.E_CONCENTRATE:
-			modelstr = "body_" + _ChunkIndex;
-			break;
-		}
-		
+		string modelstr = GenerateModelStringFromTemplateSetting( _ChunkIndex , _ModelType );
 		
 		Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
 		if (null != Mesh)
 		{
-			// GlobalSingleton.DEBUG("ChangeModel : " + _ChunkIndex + "," + model);
-			Mesh.StartMorphingModel("bone" + _ChunkIndex, modelstr , ref morphData );
+			string chunkKey = GenerateChunkKeyFromIndex( _ChunkIndex ) ;
+			Mesh.StartMorphingModel( chunkKey , modelstr , morphData );
 		}
 	}
 	
@@ -136,32 +121,44 @@ public class Character : MonoBehaviour {
 		return false == isMorphing  ;
 	}
 	
+	private string GenerateChunkKeyFromIndex( int _ChunkIndex )
+	{
+		return "bone" + _ChunkIndex ;
+	}
+	
+	private string GenerateModelStringFromTemplateSetting( int _ChunkIndex, MODELTYPE _ModelType )
+	{
+		string model = "body_" + _ChunkIndex;
+		string[] def_models = { "shield" };
+		string[] atk_models = { "axe", "sword" };
+		
+		switch (_ModelType)
+		{
+		case MODELTYPE.E_DEFENSE:
+			model = def_models[Random.Range(0, 100) % def_models.Length];
+			break;
+			
+		case MODELTYPE.E_ATTACK:
+			model = atk_models[Random.Range(0, 100) % atk_models.Length];
+			break;
+			
+		case MODELTYPE.E_CONCENTRATE:
+			model = "body_" + _ChunkIndex;
+			break;
+		}
+		
+	}
+	
     public void DoChangeModel(int _ChunkIndex, MODELTYPE _ModelType)
     {
-        string model = "body_" + _ChunkIndex;
-        string[] def_models = { "shield" };
-        string[] atk_models = { "axe", "sword" };
-
-        switch (_ModelType)
-        {
-            case MODELTYPE.E_DEFENSE:
-                model = def_models[Random.Range(0, 100) % def_models.Length];
-                break;
-
-            case MODELTYPE.E_ATTACK:
-                model = atk_models[Random.Range(0, 100) % atk_models.Length];
-                break;
-
-            case MODELTYPE.E_CONCENTRATE:
-                model = "body_" + _ChunkIndex;
-                break;
-        }
-
+		string model = GenerateModelStringFromTemplateSetting( _ChunkIndex , _ModelType ) ;
+        
         Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
         if (null != Mesh)
         {
             // GlobalSingleton.DEBUG("ChangeModel : " + _ChunkIndex + "," + model);
-            Mesh.ChangeModel("bone" + _ChunkIndex, model);
+			string chunkKey = GenerateChunkKeyFromIndex( _ChunkIndex ) ;
+			Mesh.ChangeModel( chunkKey , model);
         }
     }
 
