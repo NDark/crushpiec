@@ -240,7 +240,6 @@ public class Character : MonoBehaviour {
         }
     }
 
-	
     // Use this for initialization
     void Start () {
         if (m_ShareAnimation == null) {
@@ -253,6 +252,4 @@ public class Character : MonoBehaviour {
 	void Update () {
 	
 	}
-	
-	
 }

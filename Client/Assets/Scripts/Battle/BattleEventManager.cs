@@ -106,6 +106,7 @@ public class BattleEventManager : DummyBattlePlay {
     // Use this for initialization
     void Start () {
 		
+		
     }
 
     // Update is called once per frame
@@ -267,7 +268,6 @@ public class BattleEventManager : DummyBattlePlay {
     	return ret ;
     }
 
-	
     void OnInitAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
     {
         switch (_Action)
