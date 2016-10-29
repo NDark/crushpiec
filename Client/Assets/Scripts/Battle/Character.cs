@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic ;
 
 public enum MODELTYPE
 {
@@ -8,6 +9,11 @@ public enum MODELTYPE
     E_CONCENTRATE,
 
     E_MODELTYPE_NUM
+}
+
+public class MorphingStruct
+{
+	public bool isInMorphing = false ;
 }
 
 public class Character : MonoBehaviour {
@@ -30,6 +36,9 @@ public class Character : MonoBehaviour {
     public Attribute def { get { return m_ShareUnitData.m_DEF; } }
     public IMesh mesh { get { return m_ShareMeshData; } }
 
+	Dictionary<int,MorphingStruct> m_MorphingData =
+		 new Dictionary<int, MorphingStruct>() ;
+	
     public void ReCreate() {
         if (m_ShareMeshData != null) {
             s_ShareMeshCreator.DestroyMesh(ref m_ShareMeshData);
@@ -52,6 +61,26 @@ public class Character : MonoBehaviour {
         }
     }
 
+	public void ForceEndMorphing()
+	{
+		foreach( var data in m_MorphingData.Values )
+		{
+			data.isInMorphing = false ;
+		}
+	}
+	
+	public void StartMorphingModel(int _ChunkIndex, MODELTYPE _ModelType)
+	{
+		MorphingStruct data = null ;
+		if( false == m_MorphingData.ContainsKey( _ChunkIndex ) )
+		{
+			m_MorphingData.Add( _ChunkIndex , new MorphingStruct() ) ;
+		}
+		
+		data = m_MorphingData[ _ChunkIndex ] ;
+		data.isInMorphing = true ;
+	}
+	
     public void DoChangeModel(int _ChunkIndex, MODELTYPE _ModelType)
     {
         string model = "body_" + _ChunkIndex;
@@ -100,6 +129,20 @@ public class Character : MonoBehaviour {
         }
     }
 
+	public bool isMorphingEnded()
+	{
+		bool isMorphing = false ;
+		foreach( MorphingStruct data in this.m_MorphingData.Values )
+		{
+			if( true == data.isInMorphing )
+			{
+				isMorphing = true ;
+				break ;
+			}
+		}
+		return false == isMorphing  ;
+	}
+	
     // Use this for initialization
     void Start () {
         if (m_ShareAnimation == null) {
@@ -112,4 +155,6 @@ public class Character : MonoBehaviour {
 	void Update () {
 	
 	}
+	
+	
 }

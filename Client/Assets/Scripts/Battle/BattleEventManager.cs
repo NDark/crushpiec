@@ -79,6 +79,12 @@ public class BattleEventManager : DummyBattlePlay {
 
     public override void StartBattle()
     {
+		StartMorphingModel(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+		StartMorphingModel(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+		StartMorphingModel(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+		StartMorphingModel(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+		StartMorphingModel(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+		StartMorphingModel(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
 		
 		m_State = GameState.WaitForMorphing;
 		
@@ -94,7 +100,13 @@ public class BattleEventManager : DummyBattlePlay {
     // Use this for initialization
     void Start () {
         
-        
+		OnInitAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+		OnInitAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+		OnInitAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+		OnInitAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+		OnInitAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+		OnInitAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+		
     }
 
     // Update is called once per frame
@@ -256,6 +268,18 @@ public class BattleEventManager : DummyBattlePlay {
     	return ret ;
     }
 
+	
+		
+	void StartMorphingModel(Character _CharRef, int _ChunkIndex, ActionKey _Action)
+	{
+		switch (_Action)
+		{
+		case ActionKey.Defend:
+			_CharRef.StartMorphingModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
+			break;
+		}
+	}
+	
     void OnInitAction(Character _CharRef, int _ChunkIndex, ActionKey _Action)
     {
         switch (_Action)
@@ -269,6 +293,6 @@ public class BattleEventManager : DummyBattlePlay {
     
 	bool isMorphingEnded()
 	{
-		return true ;
+		return m_CharacterRef.isMorphingEnded() && m_CharacterRef.isMorphingEnded() ;
 	}
 }
