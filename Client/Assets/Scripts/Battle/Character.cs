@@ -128,25 +128,25 @@ public class Character : MonoBehaviour {
 	
 	private string GenerateModelStringFromTemplateSetting( int _ChunkIndex, MODELTYPE _ModelType )
 	{
-		string model = "body_" + _ChunkIndex;
+		string ret = "body_" + _ChunkIndex;
 		string[] def_models = { "shield" };
 		string[] atk_models = { "axe", "sword" };
 		
 		switch (_ModelType)
 		{
 		case MODELTYPE.E_DEFENSE:
-			model = def_models[Random.Range(0, 100) % def_models.Length];
+			ret = def_models[Random.Range(0, 100) % def_models.Length];
 			break;
 			
 		case MODELTYPE.E_ATTACK:
-			model = atk_models[Random.Range(0, 100) % atk_models.Length];
+			ret = atk_models[Random.Range(0, 100) % atk_models.Length];
 			break;
 			
 		case MODELTYPE.E_CONCENTRATE:
-			model = "body_" + _ChunkIndex;
+			ret = "body_" + _ChunkIndex;
 			break;
 		}
-		
+		return ret ;
 	}
 	
     public void DoChangeModel(int _ChunkIndex, MODELTYPE _ModelType)
