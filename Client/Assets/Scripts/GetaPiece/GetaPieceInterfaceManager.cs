@@ -595,7 +595,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	private void CheckPowerAttackPicture() 
 	{
-		Debug.Log("m_Player.m_PowerAttack" + m_Player.m_PowerAttack);
+		// Debug.Log("m_Player.m_PowerAttack" + m_Player.m_PowerAttack);
 		for( int i = 0 
 		; i < this.m_Player.m_Action.Length 
 		&& i < m_ComponentSwordImages.Length 
@@ -655,9 +655,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		int secondLine = m_LastEnergyValue + m_TimeRefillNum ;
 		int thirdLine = m_LastEnergyValue + m_TimeRefillNum + m_DefendSucceedNum ;
 		
-		Debug.Log("m_LastEnergyValue" + m_LastEnergyValue ) ;
-		Debug.Log("m_TimeRefillNum" + m_TimeRefillNum ) ;
-		Debug.Log("m_DefendSucceedNum" + m_DefendSucceedNum ) ;
+		// Debug.Log("m_LastEnergyValue" + m_LastEnergyValue ) ;
+		// Debug.Log("m_TimeRefillNum" + m_TimeRefillNum ) ;
+		// Debug.Log("m_DefendSucceedNum" + m_DefendSucceedNum ) ;
 		for( int i = 0 ; i < m_EnergyBackgrounds.Count ; ++i )
 		{
 			
