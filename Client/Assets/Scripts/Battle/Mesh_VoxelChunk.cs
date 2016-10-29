@@ -85,9 +85,98 @@ public class Mesh_VoxelChunk : IMesh
         }
     }
     
-	public void MoveChunkModel(string chunk, string model)
+	public void StartMorphingModel(string chunkKey 
+		, string newModelStr 
+		, ref MorphingStruct _MorphingData )
 	{
-		Debug.Log("MoveChunkModel chunk=" + chunk + " model=" + model );
+		Debug.Log("MoveChunkModel chunk=" + chunkKey + " model=" + newModelStr );
+		
+		Chunk attachedChunkData ;
+		if ( false == m_ChunkMap.TryGetValue(chunkKey, out attachedChunkData))
+		{
+			Debug.LogWarning("StartMorphingModel() false == m_ChunkMap.TryGetValue chunkKey=" + chunkKey );
+			return ;
+		}
+		
+		var listObjCache = m_ChunkCache ;
+		List<GameObject> allOrgModelList;
+		if ( false == listObjCache.TryGetValue(chunkKey, out allOrgModelList))
+		{
+			Debug.LogWarning("StartMorphingModel() false == listObjCache.TryGetValue chunkKey=" + chunkKey );
+			return; 
+		}
+		
+		_MorphingData.morphVec.Clear() ;
+		foreach (GameObject o in allOrgModelList) 
+		{
+			var morphObj = new MorphingObj() ;
+			morphObj.GameObj = o ;
+			_MorphingData.morphVec.Add( morphObj ) ;
+		}
+		// Debug.LogWarning("StartMorphingModel() _MorphingData.morphVec.Count=" + _MorphingData.morphVec.Count );
+		
+		var storageModelDataMap = m_ModelMap ;
+		Chunk newModelChunkData ;
+		if (storageModelDataMap.TryGetValue(newModelStr, out newModelChunkData))
+		{
+			Vector2 size = newModelChunkData.Size;
+			Vector2 scale = newModelChunkData.Scale;
+			Vector3 objectPos = attachedChunkData.LocalPos + newModelChunkData.LocalPos;
+			int[] vertex = newModelChunkData.Vertex;
+			
+			Vector3 localScale = root.transform.localScale;
+			int _w = (int)size.x;
+			int _h = (int)size.y;
+			int _size = _w * _h;
+			
+			List<Vector3> validPositionVec = new List<Vector3>() ;
+			for (int i = 0; i < _size ; ++i)
+			{
+				int voxel = vertex[i];
+				Vector3 targetPos = Vector3.zero ;
+				if (voxel > 0 )
+				{
+					targetPos = root.transform.position
+						+ new Vector3(
+							localScale.x * (scale.x * (i % _w - _h / 2) + objectPos.x),
+							localScale.y * (scale.y * (_h / 2 - i / _w) + objectPos.y),
+							objectPos.z);
+					validPositionVec.Add( targetPos ) ;
+				}		
+			}
+			// Debug.LogWarning("StartMorphingModel() validPositionVec.Count=" + validPositionVec.Count );
+			
+			Shuffle( validPositionVec ) ;
+			
+			int indexValidPosition = 0 ;
+			for (int i = 0; i < _MorphingData.morphVec.Count ; ++i)
+			{
+				Vector3 targetPos = Vector3.zero ;
+				if ( i < validPositionVec.Count )
+				{
+					targetPos = validPositionVec[ indexValidPosition ] ;
+					++indexValidPosition ;
+				}		
+				
+				_MorphingData.morphVec[ i ].Target = validPositionVec[ indexValidPosition ] ;
+			}
+			// Debug.LogWarning("StartMorphingModel() indexValidPosition=" + indexValidPosition );
+		}
+	}
+	
+	public void Shuffle( List<Vector3> list )
+	{
+		for(int i=0; i < list.Count; i++)
+		{
+			this.Swap(list, i , Random.Range(i, list.Count) ) ;
+		}
+	}
+	
+	public void Swap(List<Vector3> list, int i, int j)
+	{
+		var temp = list[i];
+		list[i] = list[j];
+		list[j] = temp;
 	}
 	
     public void AttachModel(string chunk, string model, Chunk c)

@@ -11,9 +11,60 @@ public enum MODELTYPE
     E_MODELTYPE_NUM
 }
 
+public class MorphingObj
+{
+	public GameObject GameObj { get; set ; }
+	public Vector3 Target { get; set ; }
+}
+
 public class MorphingStruct
 {
+	static float threashold = 0.1f ;
+	static float speed = 7.0f ;
+	
 	public bool isInMorphing = false ;
+	public List<MorphingObj> morphVec = new List<MorphingObj>() ;
+	
+	public void UpdateMorphData()
+	{
+		if( false == isInMorphing )
+		{
+			return ;
+		}
+		
+		bool allisInAnimation = false ;
+		foreach( var morphObj in this.morphVec )
+		{
+			if( null != morphObj.GameObj )
+			{
+				Vector3 vecToTarget = morphObj.Target - morphObj.GameObj.transform.position ;
+				// Debug.Log("vecToTarget.magnitude=" + vecToTarget.magnitude ) ;
+				
+				if( vecToTarget.magnitude > threashold )
+				{
+					Vector3 normalVec = vecToTarget ;
+					normalVec.Normalize() ;
+					normalVec *= ( speed * Time.deltaTime ) ;
+					// Debug.Log("normalVec.magnitude=" + normalVec.magnitude ) ;
+					
+					if( normalVec.magnitude >= vecToTarget.magnitude )
+					{
+						morphObj.GameObj.transform.position = morphObj.Target ;
+					}	
+					else
+					{
+						morphObj.GameObj.transform.Translate( normalVec ) ;
+						allisInAnimation = true ;
+					}
+				}
+			}
+		}
+		
+		if( false == allisInAnimation )
+		{
+			isInMorphing = false ;
+		}
+	}
 }
 
 public class Character : MonoBehaviour {
@@ -71,14 +122,15 @@ public class Character : MonoBehaviour {
 	
 	public void StartMorphingModel(int _ChunkIndex, MODELTYPE _ModelType)
 	{
-		MorphingStruct data = null ;
+		
 		if( false == m_MorphingData.ContainsKey( _ChunkIndex ) )
 		{
 			m_MorphingData.Add( _ChunkIndex , new MorphingStruct() ) ;
 		}
 		
-		data = m_MorphingData[ _ChunkIndex ] ;
-		data.isInMorphing = true ;
+		MorphingStruct morphData = null ;
+		morphData = m_MorphingData[ _ChunkIndex ] ;
+		morphData.isInMorphing = true ;
 		
 		
 		string modelstr = "body_" + _ChunkIndex;
@@ -105,7 +157,15 @@ public class Character : MonoBehaviour {
 		if (null != Mesh)
 		{
 			// GlobalSingleton.DEBUG("ChangeModel : " + _ChunkIndex + "," + model);
-			Mesh.MoveChunkModel("bone" + _ChunkIndex, modelstr);
+			Mesh.StartMorphingModel("bone" + _ChunkIndex, modelstr , ref morphData );
+		}
+	}
+	
+	public void UpdateMorphing()
+	{
+		foreach( var morphChunk in this.m_MorphingData.Values )
+		{
+			morphChunk.UpdateMorphData() ;
 		}
 	}
 	

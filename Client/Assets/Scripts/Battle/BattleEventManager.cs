@@ -138,7 +138,7 @@ public class BattleEventManager : DummyBattlePlay {
 
 			
 			case GameState.WaitForMorphing:
-				
+				UpdateMorphing() ;
 				if ( isMorphingEnded() )
 				{
 					OnInitAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
@@ -293,6 +293,12 @@ public class BattleEventManager : DummyBattlePlay {
     
 	bool isMorphingEnded()
 	{
-		return m_CharacterRef.isMorphingEnded() && m_CharacterRef.isMorphingEnded() ;
+		return m_CharacterRef.isMorphingEnded() && m_MonsterRef.isMorphingEnded() ;
+	}
+	
+	void UpdateMorphing()
+	{
+		m_CharacterRef.UpdateMorphing() ;
+		m_MonsterRef.UpdateMorphing() ;
 	}
 }
