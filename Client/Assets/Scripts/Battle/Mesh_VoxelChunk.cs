@@ -85,6 +85,11 @@ public class Mesh_VoxelChunk : IMesh
         }
     }
     
+	public void MoveChunkModel(string chunk, string model)
+	{
+		Debug.Log("MoveChunkModel chunk=" + chunk + " model=" + model );
+	}
+	
     public void AttachModel(string chunk, string model, Chunk c)
     {
         // if (m_ChunkCache.ContainsKey(chunk) && c.Model == model)

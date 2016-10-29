@@ -79,6 +79,48 @@ public class Character : MonoBehaviour {
 		
 		data = m_MorphingData[ _ChunkIndex ] ;
 		data.isInMorphing = true ;
+		
+		
+		string modelstr = "body_" + _ChunkIndex;
+		string[] def_models = { "shield" };
+		string[] atk_models = { "axe", "sword" };
+		
+		switch (_ModelType)
+		{
+		case MODELTYPE.E_DEFENSE:
+			modelstr = def_models[Random.Range(0, 100) % def_models.Length];
+			break;
+			
+		case MODELTYPE.E_ATTACK:
+			modelstr = atk_models[Random.Range(0, 100) % atk_models.Length];
+			break;
+			
+		case MODELTYPE.E_CONCENTRATE:
+			modelstr = "body_" + _ChunkIndex;
+			break;
+		}
+		
+		
+		Mesh_VoxelChunk Mesh = m_ShareMeshData as Mesh_VoxelChunk;
+		if (null != Mesh)
+		{
+			// GlobalSingleton.DEBUG("ChangeModel : " + _ChunkIndex + "," + model);
+			Mesh.MoveChunkModel("bone" + _ChunkIndex, modelstr);
+		}
+	}
+	
+	public bool isMorphingEnded()
+	{
+		bool isMorphing = false ;
+		foreach( MorphingStruct data in this.m_MorphingData.Values )
+		{
+			if( true == data.isInMorphing )
+			{
+				isMorphing = true ;
+				break ;
+			}
+		}
+		return false == isMorphing  ;
 	}
 	
     public void DoChangeModel(int _ChunkIndex, MODELTYPE _ModelType)
@@ -129,19 +171,6 @@ public class Character : MonoBehaviour {
         }
     }
 
-	public bool isMorphingEnded()
-	{
-		bool isMorphing = false ;
-		foreach( MorphingStruct data in this.m_MorphingData.Values )
-		{
-			if( true == data.isInMorphing )
-			{
-				isMorphing = true ;
-				break ;
-			}
-		}
-		return false == isMorphing  ;
-	}
 	
     // Use this for initialization
     void Start () {
