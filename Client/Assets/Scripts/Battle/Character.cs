@@ -1,4 +1,13 @@
-﻿using UnityEngine;
+﻿/**
+@date 20161029 by NDark 
+. add class member m_MorphingData at Character.
+. add class method ForceEndMorphing()
+. add class method StartMorphingModel()
+. add class method UpdateMorphing()
+. add class method isMorphingEnded()
+
+*/
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic ;
 
