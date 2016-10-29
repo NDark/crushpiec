@@ -12,6 +12,7 @@
 . make m_State to be public.
 . modify checking of game state at IsInAnimation()
 . modify adding WaitForMorphing before the state ActionForChaanel_R_0.
+. add class method StartMorphingState()
 
 */
 using UnityEngine;
@@ -85,12 +86,7 @@ public class BattleEventManager : DummyBattlePlay {
 
     public override void StartBattle()
     {
-		StartMorphingModel(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-		StartMorphingModel(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
-		StartMorphingModel(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
-		StartMorphingModel(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
-		StartMorphingModel(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
-		StartMorphingModel(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+		StartMorphingState();
 		
 		m_State = GameState.WaitForMorphing;
 		
@@ -280,6 +276,16 @@ public class BattleEventManager : DummyBattlePlay {
     }
     
 	
+	void StartMorphingState()
+	{
+		StartMorphingModel(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+		StartMorphingModel(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+		StartMorphingModel(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+		StartMorphingModel(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+		StartMorphingModel(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+		StartMorphingModel(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+		
+	}
 	
 	void StartMorphingModel(Character _CharRef, int _ChunkIndex, ActionKey _Action)
 	{
