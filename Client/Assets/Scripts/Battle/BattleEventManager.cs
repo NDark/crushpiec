@@ -17,7 +17,9 @@ public enum GameState
     
     Idle,
     WaitForInput,
-    WaitForAnimation,
+    
+	WaitForMorphing ,
+	
     ActionForChaanel_L_0,
     ActionForChaanel_L_1,
     ActionForChaanel_L_2,
@@ -34,7 +36,7 @@ public enum GameState
 }
 
 public class BattleEventManager : DummyBattlePlay {
-    static GameState m_State = GameState.InValid;
+    public GameState m_State = GameState.InValid;
     static float AnimationTime = 0.5f;
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
@@ -72,23 +74,14 @@ public class BattleEventManager : DummyBattlePlay {
 
     public override bool IsInAnimation()
     {
-        return m_State >= GameState.ActionForChaanel_L_0 && m_State <= GameState.ActionForChaanel_R_2;
+        return m_State > GameState.WaitForInput && m_State <= GameState.ActionForChaanel_R_2;
     }
 
     public override void StartBattle()
     {
-        OnInitAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
-        OnInitAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
-        OnInitAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
-        OnInitAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
-        OnInitAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
-        OnInitAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
-
-		OnAction(m_MonsterRef, m_CharacterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
 		
-		m_State = GameState.ActionForChaanel_R_0;
+		m_State = GameState.WaitForMorphing;
 		
-        m_ElapsedTime = 0.0f;
     }
 
     void DoCreateOneCharacter(ref Character _CharacterRef, bool _Random = true)
@@ -131,6 +124,28 @@ public class BattleEventManager : DummyBattlePlay {
                 }
                 break;
 
+			
+			case GameState.WaitForMorphing:
+				
+				if ( isMorphingEnded() )
+				{
+					OnInitAction(m_CharacterRef, 0, m_UnitDataRef.m_Player.m_Action[0]);
+					OnInitAction(m_CharacterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
+					OnInitAction(m_CharacterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
+					OnInitAction(m_MonsterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+					OnInitAction(m_MonsterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
+					OnInitAction(m_MonsterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
+					
+					OnAction(m_MonsterRef, m_CharacterRef, 0, m_UnitDataRef.m_Enemy.m_Action[0]);
+					
+					m_State = GameState.ActionForChaanel_R_0;
+					
+					m_ElapsedTime = 0.0f;
+				}
+				
+				break;
+			
+			
             case GameState.ActionForChaanel_L_0:
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > AnimationTime
@@ -251,4 +266,9 @@ public class BattleEventManager : DummyBattlePlay {
                 break;
         }
     }
+    
+	bool isMorphingEnded()
+	{
+		return true ;
+	}
 }
