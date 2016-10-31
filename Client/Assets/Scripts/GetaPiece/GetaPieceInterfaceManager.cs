@@ -1,6 +1,10 @@
 ﻿
 // #define DEBUG_JUDGE_VICTORY
+
 // #define DEBUG_WAIT_ANIMATION
+
+#define DEBUG_ENEMY_ALL_DEFEND
+
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -549,8 +553,10 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 				m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
 			}
 
-			// m_Enemy.m_Action[ i ] = ActionKey.Defend ;
-
+#if DEBUG_ENEMY_ALL_DEFEND
+			m_Enemy.m_Action[ i ] = ActionKey.Defend ;
+#endif 
+// DEBUG_ENEMY_ALL_DEFEND
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
 	}
