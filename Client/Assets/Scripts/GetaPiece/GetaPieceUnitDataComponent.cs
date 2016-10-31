@@ -86,6 +86,7 @@ public class GetaPieceUnitData
 				}
 			}
 		}
+		// Debug.Log("ret=" + ret );
 		return ret ;
 	}
 

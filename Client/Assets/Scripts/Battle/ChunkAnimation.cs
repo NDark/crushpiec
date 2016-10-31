@@ -6,6 +6,7 @@
 . add class method SetOpponentTarget()
 . add class method ClearOpponentTarget()
 . add class method ClearAllOpponentTargets()
+. add event DoBeenHit
 
 */
 using UnityEngine;
@@ -36,6 +37,7 @@ public class ChunkAnimation : MonoBehaviour
     Dictionary<int , GameObject> m_OpponentTargetMap = new Dictionary<int, GameObject>() ;
 	Dictionary<int , bool> m_ActuallyBeenHittedMap = new Dictionary<int, bool>() ;
 	
+	public System.Action<int> DoBeenHit =(index)=>{} ;
 	
     IEnumerator PerformChangeAnimationState(int _ChunkIndex, AnimationState _State, float _DelayTime, bool _RestoreTransform)
     {
@@ -91,14 +93,25 @@ public class ChunkAnimation : MonoBehaviour
 	
 	public void ClearAllOpponentTargets()  
 	{
+		List<int> keys = new List<int>() ;
+		
 		foreach( var key1 in m_OpponentTargetMap.Keys )
 		{
-			m_OpponentTargetMap[key1] = null ;
+			keys.Add( key1 ) ;
+		}
+		foreach( var key in keys )
+		{
+			m_OpponentTargetMap[ key ] = null ;
 		}
 		
+		keys.Clear() ;
 		foreach( var key2 in m_ActuallyBeenHittedMap.Keys )
 		{
-			m_ActuallyBeenHittedMap[key2] = false ;
+			keys.Add( key2 ) ;
+		}
+		foreach( var key in keys )
+		{
+			m_ActuallyBeenHittedMap[ key ] = false ;
 		}
 		
 	}
@@ -174,6 +187,11 @@ public class ChunkAnimation : MonoBehaviour
 				if( distanceVec.magnitude < 2.0f )
 				{
 					m_ActuallyBeenHittedMap[ i ] = true ;
+					
+					if( m_State == AnimationState.Hitted )
+					{
+						DoBeenHit( i ) ;
+					}
 				}
 			}
 			

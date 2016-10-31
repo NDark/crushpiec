@@ -14,6 +14,14 @@
 . modify adding WaitForMorphing before the state ActionForChaanel_R_0.
 . add class method StartMorphingState()
 
+@date 20161031 by NDark 
+. add class method Handler_CharacterBeenHit()
+. add class method Handler_EnemyBeenHit()
+. add class member m_PlayerHPSinceBattleStart
+. add class member m_EnemyHPSinceBattleStart
+. add class method UpdateHitPointPlayerFromInput()
+. add class method UpdateHitPointEnemyFromInput()
+	
 */
 using UnityEngine;
 using System.Collections;
@@ -104,6 +112,19 @@ public class BattleEventManager : DummyBattlePlay {
 		
 		
     }
+    
+	void OnDestroy()
+	{
+		if( null != m_CharacterRef )
+		{
+			m_CharacterRef.DoBeenHit -= Handler_CharacterBeenHit ;
+		}
+		if( null != m_MonsterRef )
+		{
+			m_MonsterRef.DoBeenHit -= Handler_EnemyBeenHit ;
+		}
+	}
+	
 
     // Update is called once per frame
     void Update () {
@@ -111,7 +132,15 @@ public class BattleEventManager : DummyBattlePlay {
         {
             case GameState.Initization:
                 DoCreateOneCharacter(ref m_CharacterRef, false);
-                DoCreateOneCharacter(ref m_MonsterRef, false);
+				if( null != m_CharacterRef )
+				{
+					m_CharacterRef.DoBeenHit += Handler_CharacterBeenHit ;
+				}
+				DoCreateOneCharacter(ref m_MonsterRef , false);
+				if( null != m_MonsterRef )
+				{
+					m_MonsterRef.DoBeenHit += Handler_EnemyBeenHit ;
+				}
                 m_State = GameState.Idle;
                 break;
 
@@ -314,4 +343,32 @@ public class BattleEventManager : DummyBattlePlay {
 		m_CharacterRef.UpdateMorphing() ;
 		m_MonsterRef.UpdateMorphing() ;
 	}
+
+	
+	void Handler_CharacterBeenHit( int _ChunkIndex )
+	{
+		// Debug.Log("BattleEventManager Handler_DoBeenHit _ChunkIndex" + _ChunkIndex);
+		m_UnitDataRef.m_BattleEvent.Enqueue( 
+			new GetaPieceBattleEvent
+			{ 
+				Type = GetaPieceBattleEventType.Damage.ToString() 
+				, Target = "Player"
+				, Value = _ChunkIndex.ToString() 
+			} ) ;
+				
+	}	
+	
+	
+	void Handler_EnemyBeenHit( int _ChunkIndex )
+	{
+		// Debug.Log("BattleEventManager Handler_DoBeenHit _ChunkIndex" + _ChunkIndex);
+		m_UnitDataRef.m_BattleEvent.Enqueue( 
+		                                    new GetaPieceBattleEvent
+		                                    { 
+			Type = GetaPieceBattleEventType.Damage.ToString() 
+				, Target = "Enemy"
+					, Value = _ChunkIndex.ToString() 
+		} ) ;
+		
+	}	
 }

@@ -8,6 +8,8 @@
 . add class method GenerateChunkKeyFromIndex()
 . add class method GenerateModelStringFromTemplateSetting()
 
+@date 20161031 by NDark
+. add class method Handler_DoBeenHit()
 
 */
 using UnityEngine;
@@ -46,6 +48,8 @@ public class Character : MonoBehaviour {
 	// the morphing animation controller, will automatically been created in StartMorphingModel()
 	Dictionary<int,MorphingStruct> m_MorphingData =
 		 new Dictionary<int, MorphingStruct>() ;
+	
+	public System.Action<int> DoBeenHit = (index)=>{} ;
 	
     public void ReCreate() {
         if (m_ShareMeshData != null) {
@@ -210,10 +214,25 @@ public class Character : MonoBehaviour {
             // m_ShareAnimation = GetComponent<TransformAnimation>();
             m_ShareAnimation = GetComponent<ChunkAnimation>();
         }
+        
+		m_ShareAnimation.DoBeenHit += Handler_DoBeenHit ;
+    }
+    
+    void OnDestroy()
+    {
+		m_ShareAnimation.DoBeenHit -= Handler_DoBeenHit ;
     }
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
+	
+	
+	void Handler_DoBeenHit( int _ChunkIndex )
+	{
+		Debug.Log("Character Handler_DoBeenHit _ChunkIndex" + _ChunkIndex);
+		DoBeenHit( _ChunkIndex ) ;
+	}
+	
 }

@@ -289,6 +289,8 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 
 		m_InAttackBlockBackground.Blend("Language_StartAction_Hide");
 
+		m_PlayerHPSinceBattleStart = m_Player.HitPoint ;
+		m_EnemyHPSinceBattleStart = m_Enemy.HitPoint ;
 
 		m_State = GetaPieceInterfaceState.WaitPlayerInput ;
 	}
@@ -501,6 +503,28 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		return ret ;
 	}
 
+	private void UpdateHitPointPlayerFromInput( int _HitPoint )
+	{
+		// player
+		if( null != m_HitPointPlayer )
+		{
+			m_HitPointPlayer.sizeDelta = 
+				new Vector2( _HitPoint * 100.0f / m_Player.MaxHitPoint , 0 ) ;
+		}
+		
+	}
+	
+	private void UpdateHitPointEnemyFromInput( int _HitPoint )
+	{
+		// player
+		if( null != m_HitPointEnemy )
+		{
+			m_HitPointEnemy.sizeDelta = 
+				new Vector2( _HitPoint * 100.0f / m_Enemy.MaxHitPoint , 0 ) ;
+		}
+		
+	}
+	
 	private void UpdateHitPointFromDataOnce()
 	{
 		// player
@@ -554,7 +578,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			}
 
 #if DEBUG_ENEMY_ALL_DEFEND
-			m_Enemy.m_Action[ i ] = ActionKey.Defend ;
+			m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
 #endif 
 // DEBUG_ENEMY_ALL_DEFEND
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
@@ -590,9 +614,25 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		{
 		case GetaPieceBattleEventType.Damage :
 			{
-				// var targetString = _Event.Target ;
-				// var damageValue = _Event.AsInt() ;
-
+				var targetString = _Event.Target ;
+				var damageActionValue = _Event.AsInt() ;
+				if( "Enemy" == targetString )
+				{
+					int damageFromPlayer = m_Enemy.CalculateSufferDamageSeperatedly( m_Player , damageActionValue ) ;
+					m_EnemyHPSinceBattleStart -= damageFromPlayer ;
+					
+					UpdateHitPointEnemyFromInput( m_EnemyHPSinceBattleStart ) ;
+					
+				}
+				else if( "Player" == targetString )
+				{
+					int damageFromEnemy = m_Player.CalculateSufferDamageSeperatedly( m_Enemy , damageActionValue ) ;
+					m_PlayerHPSinceBattleStart -= damageFromEnemy ;
+					
+					UpdateHitPointPlayerFromInput( m_PlayerHPSinceBattleStart ) ;					
+				}
+				
+				
 			}
 			break ;
 		}
@@ -635,7 +675,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			}
 		}
 		m_Player.m_PowerAttack = isPowerAttack ;
-		Debug.Log("m_Player.m_PowerAttack="+m_Player.m_PowerAttack);
+		// Debug.Log("m_Player.m_PowerAttack="+m_Player.m_PowerAttack);
 
 		isPowerAttack = false ;
 		for( int i = 0 ; i < m_Enemy.m_Action.Length ; ++i )
@@ -646,7 +686,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			}
 		}
 		m_Enemy.m_PowerAttack = isPowerAttack ;
-		Debug.Log("m_Enemy.m_PowerAttack="+m_Enemy.m_PowerAttack);
+		// Debug.Log("m_Enemy.m_PowerAttack="+m_Enemy.m_PowerAttack);
 
 	}
 
@@ -705,6 +745,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		
 		m_IsHideEnergyInThisTurn = true ;
 	}
+	
+	private int m_PlayerHPSinceBattleStart { get; set; }
+	private int m_EnemyHPSinceBattleStart { get; set; }
 	
 	private ActionKeyEnumHelper m_ActionKeyEnumHelper = new ActionKeyEnumHelper() ;
 	private GetaPieceInterfaceState m_State = GetaPieceInterfaceState.UnActive ;
