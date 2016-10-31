@@ -62,8 +62,12 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	public Animation m_Lose = null ;
 	public Animation m_InAttackBlockBackground = null ;
 
-	public RectTransform m_HitPointPlayer = null ;
-	public RectTransform m_HitPointEnemy = null ;
+	public GameObject m_PlayerHP = null ;
+	public GameObject m_EnemyHP = null ;
+	private RectTransform m_HitPointPlayer = null ;
+	private RectTransform m_HitPointEnemy = null ;
+	private UGUIImageVibration m_HPVibrationPlayer = null ;
+	private UGUIImageVibration m_HPVibrationEnemy = null ;
 
 	private ActionKey [] m_SelectedActions = new ActionKey[3] ;
 	
@@ -184,7 +188,26 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			Debug.LogError("null == m_UnitDataGameObject");
 			return ;
 		}
+		
+		if( null == m_PlayerHP )
+		{
+			Debug.LogError("null == m_PlayerHP");
+			return ;		
+		}
+		
+		m_HitPointPlayer = m_PlayerHP.GetComponent<RectTransform>() ;
+		m_HPVibrationPlayer = m_PlayerHP.GetComponent<UGUIImageVibration>() ;
+		
+		if( null == m_EnemyHP )
+		{
+			Debug.LogError("null == m_EnemyHP");
+			return ;
+		}
 
+		m_HitPointEnemy = m_EnemyHP.GetComponent<RectTransform>() ;
+		m_HPVibrationEnemy = m_EnemyHP.GetComponent<UGUIImageVibration>() ;
+		
+		
 		InterfaceInitialize_Data() ;
 
 		InterfaceInitialize_EnergyGrid() ;
@@ -623,6 +646,11 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 					
 					UpdateHitPointEnemyFromInput( m_EnemyHPSinceBattleStart ) ;
 					
+					if( null != m_HPVibrationEnemy )
+					{
+						m_HPVibrationEnemy.ActiveVibration( 1 ) ;
+					}
+					
 				}
 				else if( "Player" == targetString )
 				{
@@ -630,6 +658,11 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 					m_PlayerHPSinceBattleStart -= damageFromEnemy ;
 					
 					UpdateHitPointPlayerFromInput( m_PlayerHPSinceBattleStart ) ;					
+					
+					if( null != m_HPVibrationPlayer )
+					{
+						m_HPVibrationPlayer.ActiveVibration( 1 ) ;
+					}
 				}
 				
 				
