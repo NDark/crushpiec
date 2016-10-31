@@ -240,6 +240,8 @@ public class BattleEventManager : DummyBattlePlay {
             case ActionKey.Attack:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_ATTACK);
                 _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 1.2f);
+				_CharRef.SetOpponentTarget( _ChunkIndex ) ;
+				
                 _OtherRef.DoAction(_ChunkIndex, AnimationState.Hitted, 1.2f);
 				_OtherRef.SetOpponentTarget( _ChunkIndex ) ;
                 break;
