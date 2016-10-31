@@ -175,7 +175,7 @@ public class Character : MonoBehaviour {
 	
 	public void SetOpponentTarget(int _ChunkIndex )  
 	{
-		Debug.Log("SetOpponentTarget");
+		// Debug.Log("SetOpponentTarget");
 		float dx = gameObject.transform.localScale.x;
 		string sx = (dx > 0.0f) ? "R" : "L";
 		string attackerSide = (sx == "R" ) ? "L" : "R";
@@ -186,7 +186,7 @@ public class Character : MonoBehaviour {
 	
 	public void ClearOpponentTarget( int _ChunkIndex )  
 	{
-		Debug.Log("ClearOpponentTarget");
+		// Debug.Log("ClearOpponentTarget");
 		m_ShareAnimation.ClearOpponentTarget( _ChunkIndex ) ;
 		
 	}
