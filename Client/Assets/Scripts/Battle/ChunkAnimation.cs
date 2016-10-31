@@ -1,4 +1,14 @@
-﻿using UnityEngine;
+﻿/**
+
+@date 20161031 by NDark
+. add class member m_OpponentTargetMap
+. add class member m_ActuallyBeenHittedMap
+. add class method SetOpponentTarget()
+. add class method ClearOpponentTarget()
+. add class method ClearAllOpponentTargets()
+
+*/
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -22,7 +32,11 @@ public class ChunkAnimation : MonoBehaviour
     TransformCache[] m_TransformRef = new TransformCache[3];
     AnimationState m_State = AnimationState.InValid;
     AnimationState m_NextState = AnimationState.InValid;
-
+    
+    Dictionary<int , GameObject> m_OpponentTargetMap = new Dictionary<int, GameObject>() ;
+	Dictionary<int , bool> m_ActuallyBeenHittedMap = new Dictionary<int, bool>() ;
+	
+	
     IEnumerator PerformChangeAnimationState(int _ChunkIndex, AnimationState _State, float _DelayTime, bool _RestoreTransform)
     {
         yield return new WaitForSeconds(_DelayTime);
@@ -42,7 +56,53 @@ public class ChunkAnimation : MonoBehaviour
             ChunkRef[_ChunkIndex] = null;
         }
     }
-
+    
+	public void SetOpponentTarget( int _ChunkIndex , string _ChunkString )  
+	{
+		if( !m_OpponentTargetMap.ContainsKey( _ChunkIndex ) )
+		{
+			m_OpponentTargetMap.Add( _ChunkIndex , null ) ;
+		}
+		m_OpponentTargetMap[ _ChunkIndex ] = GlobalSingleton.Find(_ChunkString, true);
+		if( null == m_OpponentTargetMap[ _ChunkIndex ] )
+		{
+			Debug.LogWarning("SetOpponentTarget null == null == m_OpponentTargetMap _ChunkString" + _ChunkString );
+		}
+		
+		if( !m_ActuallyBeenHittedMap.ContainsKey( _ChunkIndex ) )
+		{
+			m_ActuallyBeenHittedMap.Add( _ChunkIndex , false ) ;
+		}
+		m_ActuallyBeenHittedMap[ _ChunkIndex ] = false ;
+		
+	}
+	public void ClearOpponentTarget( int _ChunkIndex )  
+	{
+		if( m_OpponentTargetMap.ContainsKey( _ChunkIndex ) )
+		{
+			m_OpponentTargetMap[ _ChunkIndex ] = null ;
+		}
+		if( m_ActuallyBeenHittedMap.ContainsKey( _ChunkIndex ) )
+		{
+			m_ActuallyBeenHittedMap[ _ChunkIndex ] = false ;
+		}
+	}
+	
+	
+	public void ClearAllOpponentTargets()  
+	{
+		foreach( var key1 in m_OpponentTargetMap.Keys )
+		{
+			m_OpponentTargetMap[key1] = null ;
+		}
+		
+		foreach( var key2 in m_ActuallyBeenHittedMap.Keys )
+		{
+			m_ActuallyBeenHittedMap[key2] = false ;
+		}
+		
+	}
+	
     public void DoAnimation(
         Character _CharRef,
         string _ChunkNode,
@@ -114,10 +174,30 @@ public class ChunkAnimation : MonoBehaviour
 
                 case AnimationState.Hitted:
                     {
-                        Vector3 originPos = m_TransformRef[i].m_PositionRef;
-                        float dx = Random.Range(-1.0f, 1.0f);
-                        chunk.transform.position =
-                            originPos + (new Vector3(dx, 0, 0));
+						if( true == m_OpponentTargetMap.ContainsKey(i)
+						   && null != m_OpponentTargetMap[ i ] 
+						   	&& true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+							&& false == m_ActuallyBeenHittedMap[ i ] )
+	                    {
+							Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+							Debug.Log("distanceVec" + distanceVec.magnitude);
+							
+							if( distanceVec.magnitude < 2.0f )
+							{
+								m_ActuallyBeenHittedMap[ i ] = true ;
+							}
+	                    }
+	                    
+						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+				   			&& true == m_ActuallyBeenHittedMap[ i ] )
+						{
+							Debug.LogWarning("vibration");
+							Vector3 originPos = m_TransformRef[i].m_PositionRef;
+							float dx = Random.Range(-1.0f, 1.0f);
+							chunk.transform.position =
+								originPos + (new Vector3(dx, 0, 0));	
+						}
+                        
                     }
                     break;
 

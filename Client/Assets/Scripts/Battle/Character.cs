@@ -8,6 +8,7 @@
 . add class method GenerateChunkKeyFromIndex()
 . add class method GenerateModelStringFromTemplateSetting()
 
+
 */
 using UnityEngine;
 using System.Collections;
@@ -171,7 +172,29 @@ public class Character : MonoBehaviour {
             _State,
             _Delay);
     }
-    
+	
+	public void SetOpponentTarget(int _ChunkIndex )  
+	{
+		Debug.Log("SetOpponentTarget");
+		float dx = gameObject.transform.localScale.x;
+		string sx = (dx > 0.0f) ? "R" : "L";
+		string attackerSide = (sx == "R" ) ? "L" : "R";
+		string attackerChunckString = string.Format("Chunk-{0}-{1}", attackerSide, _ChunkIndex) ; 
+		m_ShareAnimation.SetOpponentTarget( _ChunkIndex , attackerChunckString ) ;
+		
+	}
+	
+	public void ClearOpponentTarget( int _ChunkIndex )  
+	{
+		Debug.Log("ClearOpponentTarget");
+		m_ShareAnimation.ClearOpponentTarget( _ChunkIndex ) ;
+		
+	}
+	public void ClearAllOpponentTargets()  
+	{
+		m_ShareAnimation.ClearAllOpponentTargets() ;
+	}
+	
     public void DoUpdateHP() {
         if (m_UIHPBar != null ) {
             float hpRatio = Mathf.Max(0.0f, (float)m_ShareUnitData.m_HP.value / m_ShareUnitData.m_HP.max);

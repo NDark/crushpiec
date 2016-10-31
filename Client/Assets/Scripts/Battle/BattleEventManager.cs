@@ -241,15 +241,18 @@ public class BattleEventManager : DummyBattlePlay {
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_ATTACK);
                 _CharRef.DoAction(_ChunkIndex, AnimationState.Attack, 1.2f);
                 _OtherRef.DoAction(_ChunkIndex, AnimationState.Hitted, 1.2f);
+				_OtherRef.SetOpponentTarget( _ChunkIndex ) ;
                 break;
 
             case ActionKey.Defend:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_DEFENSE);
+				_OtherRef.ClearOpponentTarget( _ChunkIndex );
                 // _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
 
             case ActionKey.Concentrate:
                 _CharRef.DoChangeModel(_ChunkIndex, MODELTYPE.E_CONCENTRATE);
+				_OtherRef.ClearOpponentTarget( _ChunkIndex );
                 break;
         }
     }
@@ -273,6 +276,7 @@ public class BattleEventManager : DummyBattlePlay {
                 // _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
         }
+		_CharRef.ClearAllAttackTargets() ;
     }
     
 	
