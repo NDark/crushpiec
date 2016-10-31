@@ -200,7 +200,7 @@ public class ChunkAnimation : MonoBehaviour
 						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
 				   			&& true == m_ActuallyBeenHittedMap[ i ] )
 						{
-							Debug.LogWarning("vibration");
+							// Debug.LogWarning("vibration");
 							Vector3 originPos = m_TransformRef[i].m_PositionRef;
 							float dx = Random.Range(-1.0f, 1.0f);
 							chunk.transform.position =
