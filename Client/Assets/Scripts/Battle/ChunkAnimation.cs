@@ -162,31 +162,40 @@ public class ChunkAnimation : MonoBehaviour
                 continue;
 
             Vector3 pos = chunk.transform.position;
+            
+			if( true == m_OpponentTargetMap.ContainsKey(i)
+			   && null != m_OpponentTargetMap[ i ] 
+			   && true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+			   && false == m_ActuallyBeenHittedMap[ i ] )
+			{
+				Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+				Debug.Log("distanceVec" + distanceVec.magnitude);
+				
+				if( distanceVec.magnitude < 2.0f )
+				{
+					m_ActuallyBeenHittedMap[ i ] = true ;
+				}
+			}
+			
             switch (m_State)
             {
                 case AnimationState.Attack:
                     {
-                        float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-                        float Speed = dx * Time.deltaTime * 40.0f;
+						float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
+						float Speed = dx * Time.deltaTime * 40.0f;
+						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+						   && true == m_ActuallyBeenHittedMap[ i ] )
+						{
+							Speed *= -2.0f;
+						}
                         chunk.transform.Translate(new Vector3(Speed, 0, 0));
+	                    
                     }
                     break;
 
                 case AnimationState.Hitted:
                     {
-						if( true == m_OpponentTargetMap.ContainsKey(i)
-						   && null != m_OpponentTargetMap[ i ] 
-						   	&& true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
-							&& false == m_ActuallyBeenHittedMap[ i ] )
-	                    {
-							Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
-							Debug.Log("distanceVec" + distanceVec.magnitude);
-							
-							if( distanceVec.magnitude < 2.0f )
-							{
-								m_ActuallyBeenHittedMap[ i ] = true ;
-							}
-	                    }
+						
 	                    
 						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
 				   			&& true == m_ActuallyBeenHittedMap[ i ] )

@@ -276,7 +276,7 @@ public class BattleEventManager : DummyBattlePlay {
                 // _CharRef.DoAction(_ChunkIndex, AnimationState.Defend, 2.0f);
                 break;
         }
-		_CharRef.ClearAllAttackTargets() ;
+		_CharRef.ClearAllOpponentTargets() ;
     }
     
 	
