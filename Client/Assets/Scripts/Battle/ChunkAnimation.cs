@@ -169,7 +169,7 @@ public class ChunkAnimation : MonoBehaviour
 			   && false == m_ActuallyBeenHittedMap[ i ] )
 			{
 				Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
-				Debug.Log("distanceVec" + distanceVec.magnitude);
+				// Debug.Log("distanceVec" + distanceVec.magnitude);
 				
 				if( distanceVec.magnitude < 2.0f )
 				{
