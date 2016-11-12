@@ -3,7 +3,7 @@
 
 // #define DEBUG_WAIT_ANIMATION
 
-#define DEBUG_ENEMY_ALL_DEFEND
+// #define DEBUG_ENEMY_ALL_DEFEND
 
 using UnityEngine;
 using System.Collections.Generic;

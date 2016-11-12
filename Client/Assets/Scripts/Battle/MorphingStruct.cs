@@ -25,7 +25,7 @@ public class MorphingObj
 public class MorphingStruct
 {
 	static float threashold = 0.1f ;
-	static float speed = 1.0f ;
+	static float speed = 7.0f ;
 	
 	public bool isInMorphing = false ;
 	public List<MorphingObj> morphVec = new List<MorphingObj>() ;
