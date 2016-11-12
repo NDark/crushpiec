@@ -7,6 +7,7 @@
 
 @date 20161112 by NDark
 . add class method CalculateColorFromRootPosition()
+. add validColorVec at StartMorphingModel()
 
 */
 #define VERTEX_COLOR_256
@@ -148,10 +149,12 @@ public class Mesh_VoxelChunk : IMesh
 		
 		// first phase we all all possible position.
 		List<Vector3> validPositionVec = new List<Vector3>() ;
+		List<Color> validColorVec = new List<Color>() ;
 		for (int i = 0; i < _TotalGridSize ; ++i)
 		{
 			int voxel = gridAttributes[i];
 			Vector3 targetPos = Vector3.zero ;
+			Color targetColor ;
 			if (voxel > 0 )
 			{
 				targetPos = this.CalculatePositionFromRootPosition( root.transform.position 
@@ -159,20 +162,29 @@ public class Mesh_VoxelChunk : IMesh
 				                                                   , newModelScale 
 				                                                   , referencePos , _w , _h , i ) ;
 				
+				
 				validPositionVec.Add( targetPos ) ;
+				
+				
+				targetColor = this.CalculateColorFromRootPosition( voxel ) ;
+				// Debug.LogWarning("StartMorphingModel() targetColor=" + targetColor );
+				validColorVec.Add( targetColor ) ;
+				
 			}		
 		}
+		// Debug.LogWarning("StartMorphingModel() _MorphingData.morphVec.Count=" + _MorphingData.morphVec.Count );
 		// Debug.LogWarning("StartMorphingModel() validPositionVec.Count=" + validPositionVec.Count );
 		
 		// second phase we randomize the vector
-		CollectionUtility.List_Vector3_Shuffle( validPositionVec ) ;
+		CollectionUtility.List_Vector3Color_Shuffle( validPositionVec , validColorVec ) ;
 		
 		// third phase we try mapping morph object to those shuffled position.
 		int mappingIndex = 0 ;
 		for (int i = 0; i < _MorphingData.morphVec.Count && validPositionVec.Count > 0 ; ++i)
 		{
 			_MorphingData.morphVec[ i ].Target = validPositionVec[ mappingIndex ] ;
-			
+			_MorphingData.morphVec[ i ].DestinationColor = validColorVec[ mappingIndex ] ;
+			// Debug.Log ("validColorVec[ mappingIndex ]" + validColorVec[ mappingIndex ] );
 			if ( i < validPositionVec.Count )// if our morph object more than valid position
 			{
 				++mappingIndex ;// everty time we used one slot, plus one.
@@ -182,6 +194,8 @@ public class Mesh_VoxelChunk : IMesh
 	}
 	
 	
+	
+
     public void AttachModel(string chunk, string model, Chunk c)
     {
         // if (m_ChunkCache.ContainsKey(chunk) && c.Model == model)
