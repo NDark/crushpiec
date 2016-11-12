@@ -4,7 +4,10 @@
 . add class method Shuffle()
 . add class method Swap()
 . add class method CalculatePositionFromRootPosition()
-	
+
+@date 20161112 by NDark
+. add class method CalculateColorFromRootPosition()
+
 */
 #define VERTEX_COLOR_256
 // #define VERTEX_COLOR_8
@@ -230,35 +233,47 @@ public class Mesh_VoxelChunk : IMesh
 					obj.transform.position = this.CalculatePositionFromRootPosition( root.transform.position 
 						, localScale , scale , objectPos , _w , _h , i ) ;
 					
-
-                    // use Sprites-Default material
 #if VERTEX_COLOR_256 || VERTEX_COLOR_8
+
+					Color color = CalculateColorFromRootPosition( voxel ) ;
+					
                     MeshFilter cube = obj.GetComponent<MeshFilter>();
                     Vector3[] vertices = cube.mesh.vertices;
-#if VERTEX_COLOR_256
-                    int colorScale = 256;
-#elif VERTEX_COLOR_8
-                int colorScale = 8;
-
-#endif
-#if GRAY_SCALE_COLOR
-                    float grayScale = (voxel % colorScale) / (float)colorScale;
-                    float r = grayScale, g = grayScale, b = grayScale;
-#else
-                    float r = (voxel % colorScale) / (float)colorScale;
-                    float g = (voxel % colorScale) / (float)colorScale;
-                    float b = (voxel % colorScale) / (float)colorScale;
-#endif
-                    Color[] colors = Enumerable.Repeat(
-                        new Color(r, g, b, 1.0f),
-                        vertices.Length).ToArray();
+					Color[] colors = Enumerable.Repeat( color, vertices.Length).ToArray() ;
                     cube.mesh.colors = colors;
+#else 
+					// use Sprites-Default material                    
 #endif
+
                 }
             }
         }
     }
-    
+	
+	public Color CalculateColorFromRootPosition( int _VertexValue )
+	{
+		
+		
+#if VERTEX_COLOR_256
+		int colorScale = 256;
+#elif VERTEX_COLOR_8
+		int colorScale = 8;
+#endif
+		
+#if GRAY_SCALE_COLOR
+		float grayScale = (voxel % colorScale) / (float)colorScale;
+		float r = grayScale, g = grayScale, b = grayScale;
+#else
+		float r = (_VertexValue % colorScale) / (float)colorScale;
+		float g = (_VertexValue % colorScale) / (float)colorScale;
+		float b = (_VertexValue % colorScale) / (float)colorScale;
+#endif
+		
+		Color ret = new Color(r, g, b, 1.0f) ;
+		
+		return ret ;
+	}
+	
     public Vector3 CalculatePositionFromRootPosition( Vector3 _RootPosition 
 	                                                 , Vector3 _ParentScale 
 	                                                 , Vector3 _TargetScale 
