@@ -26,6 +26,7 @@ attack hit event
  */
 public class ChunkAnimation : MonoBehaviour
 {
+	const float CONST_ANIMATION_MOVE_SPEED = 40.0f ;
     public List<GameObject> ChunkNodeRef;
 
     List<GameObject>[] ChunkMapRef = new List<GameObject>[3];
@@ -39,6 +40,7 @@ public class ChunkAnimation : MonoBehaviour
     
     Dictionary<int , GameObject> m_OpponentTargetMap = new Dictionary<int, GameObject>() ;
 	Dictionary<int , Vector3> m_OpponentOriginalPosition = new Dictionary<int, Vector3>() ;
+	Dictionary<int , Vector3> m_SelfOriginalPosition = new Dictionary<int, Vector3>() ;
 	Dictionary<int , bool> m_ActuallyBeenHittedMap = new Dictionary<int, bool>() ;
 	
 	public System.Action<int> DoBeenHit =(index)=>{} ;
@@ -73,9 +75,14 @@ public class ChunkAnimation : MonoBehaviour
 		{
 			m_OpponentOriginalPosition.Add( _ChunkIndex , Vector3.zero ) ;
 		}
+		if( !m_SelfOriginalPosition.ContainsKey( _ChunkIndex ) )
+		{
+			m_SelfOriginalPosition.Add( _ChunkIndex , Vector3.zero ) ;
+		}
 		
 		m_OpponentTargetMap[ _ChunkIndex ] = GlobalSingleton.Find(_ChunkString, true);
 		m_OpponentOriginalPosition[ _ChunkIndex ] = m_OpponentTargetMap[ _ChunkIndex ].transform.position ;
+		m_SelfOriginalPosition[ _ChunkIndex ] = ChunkRef[ _ChunkIndex ].transform.position ;
 		
 		if( null == m_OpponentTargetMap[ _ChunkIndex ] )
 		{
@@ -181,6 +188,7 @@ public class ChunkAnimation : MonoBehaviour
     {
         for (int i = 0; i < 3; ++i)
         {
+			
             GameObject chunk = ChunkRef[i];
             if (null == chunk)
                 continue;
@@ -192,16 +200,64 @@ public class ChunkAnimation : MonoBehaviour
 			   && true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
 			   && false == m_ActuallyBeenHittedMap[ i ] )
 			{
-				Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
-				Vector3 toOppOrgVec = m_OpponentOriginalPosition[ i ] - pos ;
-				float dot = Vector3.Dot ( distanceVec , toOppOrgVec ) ;
-
-				// Debug.Log("distanceVec" + distanceVec.magnitude);
 				
-				if( distanceVec.magnitude < 2.0f || dot < 0.0f  )
+				
+				Vector3 distanceVec = Vector3.zero ;
+				Vector3 toRefOrgVec = Vector3.zero ;
+				Vector3 norDistanceVec = Vector3.zero ;
+				Vector3 norToRefOrgVec = Vector3.zero ;
+				
+				float dot = 0.0f ;
+				
+				if( m_State == AnimationState.Attack )
+				{
+#if ENABLE_DEBUG					
+					Debug.Log("true == m_OpponentTargetMap.ContainsKey i=" + i);
+					Debug.Log("m_State" + m_State);
+					
+					// Debug.Log("distanceVec" + distanceVec.magnitude);
+					Debug.Log("m_OpponentTargetMap[ i ].transform.position" + m_OpponentTargetMap[ i ].transform.position );
+					Debug.Log("pos" + pos );
+					Debug.Log("m_OpponentOriginalPosition[ i ]" + m_OpponentOriginalPosition[ i ] );
+#endif 
+//					
+					
+					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+					toRefOrgVec = m_SelfOriginalPosition[ i ] - pos ;
+					
+					norDistanceVec = distanceVec ;
+					norDistanceVec.Normalize() ;
+					norToRefOrgVec = toRefOrgVec ;
+					norToRefOrgVec.Normalize() ;
+					
+					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
+					
+					// Debug.Log("dot" + dot);
+				}
+				else
+				{
+					
+					
+					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+					toRefOrgVec = m_OpponentOriginalPosition[ i ] - pos ;
+					
+					norDistanceVec = distanceVec ;
+					norDistanceVec.Normalize() ;
+					norToRefOrgVec = toRefOrgVec ;
+					norToRefOrgVec.Normalize() ;
+					
+					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
+					dot *= -1 ;
+					
+				}
+				
+				
+				
+				if( /* distanceVec.magnitude < 0.0f || */ dot > 0.1f  )
 				{
 					m_ActuallyBeenHittedMap[ i ] = true ;
-					Debug.Log("m_State" + m_State);	
+					// Debug.LogWarning("m_State" + m_State);
+					
 					if( m_State == AnimationState.Hitted )
 					{
 						DoBeenHit( i ) ;
@@ -214,11 +270,12 @@ public class ChunkAnimation : MonoBehaviour
                 case AnimationState.Attack:
                     {
 						float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-						float Speed = dx * Time.deltaTime * 40.0f;
+						float Speed = dx * Time.deltaTime * CONST_ANIMATION_MOVE_SPEED ;
 						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
 						   && true == m_ActuallyBeenHittedMap[ i ] )
 						{
 							Speed *= -2.0f;
+							// Debug.Log("Speed" + Speed);
 						}
 						
                         chunk.transform.Translate(new Vector3(Speed, 0, 0));
