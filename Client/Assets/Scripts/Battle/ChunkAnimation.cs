@@ -8,6 +8,9 @@
 . add class method ClearAllOpponentTargets()
 . add event DoBeenHit
 
+@date 20161113 by NDark
+. add class member m_OpponentOriginalPosition
+
 */
 using UnityEngine;
 using System.Collections;
@@ -35,6 +38,7 @@ public class ChunkAnimation : MonoBehaviour
     AnimationState m_NextState = AnimationState.InValid;
     
     Dictionary<int , GameObject> m_OpponentTargetMap = new Dictionary<int, GameObject>() ;
+	Dictionary<int , Vector3> m_OpponentOriginalPosition = new Dictionary<int, Vector3>() ;
 	Dictionary<int , bool> m_ActuallyBeenHittedMap = new Dictionary<int, bool>() ;
 	
 	public System.Action<int> DoBeenHit =(index)=>{} ;
@@ -65,7 +69,14 @@ public class ChunkAnimation : MonoBehaviour
 		{
 			m_OpponentTargetMap.Add( _ChunkIndex , null ) ;
 		}
+		if( !m_OpponentOriginalPosition.ContainsKey( _ChunkIndex ) )
+		{
+			m_OpponentOriginalPosition.Add( _ChunkIndex , Vector3.zero ) ;
+		}
+		
 		m_OpponentTargetMap[ _ChunkIndex ] = GlobalSingleton.Find(_ChunkString, true);
+		m_OpponentOriginalPosition[ _ChunkIndex ] = m_OpponentTargetMap[ _ChunkIndex ].transform.position ;
+		
 		if( null == m_OpponentTargetMap[ _ChunkIndex ] )
 		{
 			Debug.LogWarning("SetOpponentTarget null == null == m_OpponentTargetMap _ChunkString" + _ChunkString );
@@ -182,12 +193,15 @@ public class ChunkAnimation : MonoBehaviour
 			   && false == m_ActuallyBeenHittedMap[ i ] )
 			{
 				Vector3 distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+				Vector3 toOppOrgVec = m_OpponentOriginalPosition[ i ] - pos ;
+				float dot = Vector3.Dot ( distanceVec , toOppOrgVec ) ;
+
 				// Debug.Log("distanceVec" + distanceVec.magnitude);
 				
-				if( distanceVec.magnitude < 2.0f )
+				if( distanceVec.magnitude < 2.0f || dot < 0.0f  )
 				{
 					m_ActuallyBeenHittedMap[ i ] = true ;
-					
+					Debug.Log("m_State" + m_State);	
 					if( m_State == AnimationState.Hitted )
 					{
 						DoBeenHit( i ) ;
@@ -206,6 +220,7 @@ public class ChunkAnimation : MonoBehaviour
 						{
 							Speed *= -2.0f;
 						}
+						
                         chunk.transform.Translate(new Vector3(Speed, 0, 0));
 	                    
                     }
