@@ -34,9 +34,9 @@ public class GetaPieceBattleEvent
 	public override string ToString()
 	{
 		return "GetaPieceBattleEvent: " +
-		          "/n Type=" + this.Type +
-		          "/n Target=" + this.Target +
-			"/n Value=" + this.Value ;
+		          "\n Type=" + this.Type +
+				"\n Target=" + this.Target +
+				"\n Value=" + this.Value ;
 	}
 }
 

@@ -604,7 +604,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			}
 
 #if DEBUG_ENEMY_ALL_DEFEND
-			m_Enemy.m_Action[ i ] = ActionKey.Concentrate ;
+			m_Enemy.m_Action[ i ] = ActionKey.Attack ;
 #endif 
 // DEBUG_ENEMY_ALL_DEFEND
 			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
@@ -633,7 +633,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			return ;
 		}
 
-		_Event.DEBUG_Print() ;
+		// _Event.DEBUG_Print() ;
 
 		var type = _Event.GetBattleType() ;
 		switch( type )
