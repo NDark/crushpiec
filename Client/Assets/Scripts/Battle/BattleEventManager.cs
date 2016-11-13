@@ -186,7 +186,7 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_L_0:
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > AnimationTime
-			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[1] , m_UnitDataRef.m_Enemy.m_Action[1] )
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[0] , m_UnitDataRef.m_Enemy.m_Action[0] )
                 )
                 {
                     OnAction(m_CharacterRef, m_MonsterRef, 1, m_UnitDataRef.m_Player.m_Action[1]);
@@ -199,7 +199,7 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_L_1:
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > AnimationTime
-			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[2] , m_UnitDataRef.m_Enemy.m_Action[2] )
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[1] , m_UnitDataRef.m_Enemy.m_Action[1] )
                 )
                 {
                     OnAction(m_CharacterRef, m_MonsterRef, 2, m_UnitDataRef.m_Player.m_Action[2]);
@@ -212,7 +212,9 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_L_2:
 			
 				m_ElapsedTime += Time.deltaTime;
-				if (m_ElapsedTime > 4.0f * AnimationTime)
+				if (m_ElapsedTime > AnimationTime
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[2] , m_UnitDataRef.m_Enemy.m_Action[2] )
+				)
 				{
 					m_State = GameState.Idle;
 				}
@@ -221,7 +223,7 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_R_0:
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > AnimationTime
-			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[1] , m_UnitDataRef.m_Player.m_Action[1] )
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[0] , m_UnitDataRef.m_Player.m_Action[0] )
                 )
                 {
                     OnAction(m_MonsterRef, m_CharacterRef, 1, m_UnitDataRef.m_Enemy.m_Action[1]);
@@ -234,7 +236,7 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_R_1:
                 m_ElapsedTime += Time.deltaTime;
                 if (m_ElapsedTime > AnimationTime
-			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[2] , m_UnitDataRef.m_Player.m_Action[2] )
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[1] , m_UnitDataRef.m_Player.m_Action[1] )
                 )
                 {
                     OnAction(m_MonsterRef, m_CharacterRef, 2, m_UnitDataRef.m_Enemy.m_Action[2]);
@@ -247,7 +249,7 @@ public class BattleEventManager : DummyBattlePlay {
             case GameState.ActionForChaanel_R_2:
 				m_ElapsedTime += Time.deltaTime;
 				if (m_ElapsedTime > AnimationTime
-			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Player.m_Action[0] , m_UnitDataRef.m_Enemy.m_Action[0] )
+			    || false == IsActionNeedsPlayAnimation( m_UnitDataRef.m_Enemy.m_Action[2] , m_UnitDataRef.m_Player.m_Action[2] )
 				)
 				{
 					OnAction(m_CharacterRef, m_MonsterRef, 0
