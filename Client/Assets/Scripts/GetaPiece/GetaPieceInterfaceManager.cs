@@ -305,6 +305,9 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 		PressComponentButton( 1 , ActionKey.Concentrate ) ;
 		PressComponentButton( 2 , ActionKey.Concentrate ) ;
 		
+		m_HPVibrationPlayer.StopVibration() ;
+		m_HPVibrationEnemy.StopVibration() ;
+		
 		UpdateEnergyBackground() ;
 		m_IsHideEnergyInThisTurn = false ;
 

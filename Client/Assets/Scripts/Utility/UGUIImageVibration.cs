@@ -1,4 +1,8 @@
-﻿using UnityEngine;
+﻿/**
+@20161113 by NDark . stop vibration when ActiveVibration() it.
+
+*/
+using UnityEngine;
 using System.Collections;
 
 public class UGUIImageVibration : MonoBehaviour 
@@ -7,6 +11,7 @@ public class UGUIImageVibration : MonoBehaviour
 	
 	public void ActiveVibration( float _ElapsedTime )
 	{
+		StopVibration() ;
 		m_IsActive = true ;
 		m_OrgPos = m_Rect.anchoredPosition ;
 		m_StopTime = Time.time + _ElapsedTime ;
