@@ -109,7 +109,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 	
 	public void TryStart()
 	{
-		Debug.Log("TryStart" );
+		// Debug.Log("TryStart" );
 
 		// copy select actions to player
 		for( int i = 0 ; i < m_SelectedActions.Length ; ++i )
@@ -607,7 +607,7 @@ public class GetaPieceInterfaceManager : MonoBehaviour
 			m_Enemy.m_Action[ i ] = ActionKey.Attack ;
 #endif 
 // DEBUG_ENEMY_ALL_DEFEND
-			Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
+			// Debug.Log("m_Enemy.m_Action[ i ]=" + m_Enemy.m_Action[ i ] ) ;
 		}
 	}
 

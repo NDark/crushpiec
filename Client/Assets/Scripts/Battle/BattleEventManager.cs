@@ -52,7 +52,7 @@ public enum GameState
 
 public class BattleEventManager : DummyBattlePlay {
     public GameState m_State = GameState.InValid;
-    static float AnimationTime = 0.5f;
+    static float AnimationTime = 1.5f;
     Character m_CharacterRef = null;
     Character m_MonsterRef = null;
     public GetaPieceUnitDataComponent m_UnitDataRef = null;

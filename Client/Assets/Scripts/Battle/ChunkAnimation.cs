@@ -10,8 +10,12 @@
 
 @date 20161113 by NDark
 . add class member m_OpponentOriginalPosition
+. re-arrange sequence at Update() make sure the checking happened after Excution at Update()
+. remove y component of checking dot at Update()
 
 */
+// #define ENABLE_DEBUG
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +30,7 @@ attack hit event
  */
 public class ChunkAnimation : MonoBehaviour
 {
-	const float CONST_ANIMATION_MOVE_SPEED = 40.0f ;
+	const float CONST_ANIMATION_MOVE_SPEED = 20.0f ;
     public List<GameObject> ChunkNodeRef;
 
     List<GameObject>[] ChunkMapRef = new List<GameObject>[3];
@@ -193,6 +197,51 @@ public class ChunkAnimation : MonoBehaviour
             if (null == chunk)
                 continue;
 
+			
+			switch (m_State)
+			{
+			case AnimationState.Attack:
+			{
+				float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
+				float Speed = dx * Time.deltaTime * CONST_ANIMATION_MOVE_SPEED ;
+				if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+				   && true == m_ActuallyBeenHittedMap[ i ] )
+				{
+					Speed *= -2.0f;
+					// Debug.Log("Speed" + Speed);
+				}
+				
+				chunk.transform.Translate(new Vector3(Speed, 0, 0));
+				
+			}
+				break;
+				
+			case AnimationState.Hitted:
+			{
+				
+				
+				if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
+				   && true == m_ActuallyBeenHittedMap[ i ] )
+				{
+					// Debug.LogWarning("vibration");
+					Vector3 originPos = m_TransformRef[i].m_PositionRef;
+					float dx = Random.Range(-1.0f, 1.0f);
+					chunk.transform.position =
+						originPos + (new Vector3(dx, 0, 0));	
+				}
+				
+			}
+				break;
+				
+			case AnimationState.Defend:
+			{
+				// float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
+				// float Speed = dx * Time.deltaTime * 2.5f;
+				// chunk.transform.Translate(new Vector3(Speed, 0, 0));
+			}
+				break;
+			}
+			
             Vector3 pos = chunk.transform.position;
             
 			if( true == m_OpponentTargetMap.ContainsKey(i)
@@ -211,7 +260,39 @@ public class ChunkAnimation : MonoBehaviour
 				
 				if( m_State == AnimationState.Attack )
 				{
-#if ENABLE_DEBUG					
+
+					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+					distanceVec.y = 0 ;
+					toRefOrgVec = m_SelfOriginalPosition[ i ] - pos ;
+					toRefOrgVec.y = 0 ;
+					norDistanceVec = distanceVec ;
+					norDistanceVec.Normalize() ;
+					norToRefOrgVec = toRefOrgVec ;
+					norToRefOrgVec.Normalize() ;
+					
+					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
+					
+					Debug.Log("att dot" + dot);
+					
+				}
+				else
+				{
+					
+					
+					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
+					distanceVec.y = 0 ;
+					toRefOrgVec = m_OpponentOriginalPosition[ i ] - pos ;
+					toRefOrgVec.y = 0 ;
+					
+					norDistanceVec = distanceVec ;
+					norDistanceVec.Normalize() ;
+					norToRefOrgVec = toRefOrgVec ;
+					norToRefOrgVec.Normalize() ;
+					
+					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
+					
+					
+					#if ENABLE_DEBUG					
 					Debug.Log("true == m_OpponentTargetMap.ContainsKey i=" + i);
 					Debug.Log("m_State" + m_State);
 					
@@ -219,44 +300,22 @@ public class ChunkAnimation : MonoBehaviour
 					Debug.Log("m_OpponentTargetMap[ i ].transform.position" + m_OpponentTargetMap[ i ].transform.position );
 					Debug.Log("pos" + pos );
 					Debug.Log("m_OpponentOriginalPosition[ i ]" + m_OpponentOriginalPosition[ i ] );
-#endif 
-//					
 					
-					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
-					toRefOrgVec = m_SelfOriginalPosition[ i ] - pos ;
+					Debug.Log("def dot" + dot);
 					
-					norDistanceVec = distanceVec ;
-					norDistanceVec.Normalize() ;
-					norToRefOrgVec = toRefOrgVec ;
-					norToRefOrgVec.Normalize() ;
-					
-					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
-					
-					// Debug.Log("dot" + dot);
-				}
-				else
-				{
-					
-					
-					distanceVec = m_OpponentTargetMap[ i ].transform.position - pos ;
-					toRefOrgVec = m_OpponentOriginalPosition[ i ] - pos ;
-					
-					norDistanceVec = distanceVec ;
-					norDistanceVec.Normalize() ;
-					norToRefOrgVec = toRefOrgVec ;
-					norToRefOrgVec.Normalize() ;
-					
-					dot = Vector3.Dot ( norDistanceVec , norToRefOrgVec ) ;
+					#endif 
+					//		
+								
 					dot *= -1 ;
 					
 				}
 				
 				
 				
-				if( /* distanceVec.magnitude < 0.0f || */ dot > 0.1f  )
+				if( /* distanceVec.magnitude < 0.0f || */ dot > 0.0f  )
 				{
 					m_ActuallyBeenHittedMap[ i ] = true ;
-					// Debug.LogWarning("m_State" + m_State);
+					Debug.LogWarning("m_State" + m_State);
 					
 					if( m_State == AnimationState.Hitted )
 					{
@@ -265,49 +324,6 @@ public class ChunkAnimation : MonoBehaviour
 				}
 			}
 			
-            switch (m_State)
-            {
-                case AnimationState.Attack:
-                    {
-						float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-						float Speed = dx * Time.deltaTime * CONST_ANIMATION_MOVE_SPEED ;
-						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
-						   && true == m_ActuallyBeenHittedMap[ i ] )
-						{
-							Speed *= -2.0f;
-							// Debug.Log("Speed" + Speed);
-						}
-						
-                        chunk.transform.Translate(new Vector3(Speed, 0, 0));
-	                    
-                    }
-                    break;
-
-                case AnimationState.Hitted:
-                    {
-						
-	                    
-						if( true == m_ActuallyBeenHittedMap.ContainsKey( i ) 
-				   			&& true == m_ActuallyBeenHittedMap[ i ] )
-						{
-							// Debug.LogWarning("vibration");
-							Vector3 originPos = m_TransformRef[i].m_PositionRef;
-							float dx = Random.Range(-1.0f, 1.0f);
-							chunk.transform.position =
-								originPos + (new Vector3(dx, 0, 0));	
-						}
-                        
-                    }
-                    break;
-
-                case AnimationState.Defend:
-                    {
-                        // float dx = Mathf.Abs(chunk.transform.localScale.x) / chunk.transform.localScale.x;
-                        // float Speed = dx * Time.deltaTime * 2.5f;
-                        // chunk.transform.Translate(new Vector3(Speed, 0, 0));
-                    }
-                    break;
-            }
         }
     }
 }
