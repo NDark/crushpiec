@@ -14,7 +14,7 @@ development apk download link: https://drive.google.com/file/d/0B08NI1xol314X1ZM
 ScreenShots:
 
 
-Reference: Qubot，Crush Piec (央文的進擊)，Rock Man（洛克人一），Endless Space。
+Reference: ??????（三一萬能俠），Qubot，Crush Piec (央文的進擊)，Rock Man（洛克人一），Endless Space。
 
 
 ***
@@ -26,7 +26,7 @@ apk 下載連結: https://drive.google.com/file/d/0B08NI1xol314X1ZMNkFZSDFVNEE/view?
 
 PS1. 目前暫定的名稱是 Geta Piece (分進不合擊)。
 
-PS2. 遊戲發想致敬：Qubot，Crush Piec (央文的進擊)，Rock Man（洛克人一），Endless Space。
+PS2. 遊戲發想致敬：??????（三一萬能俠），Qubot，Crush Piec (央文的進擊)，Rock Man（洛克人一），Endless Space。
 
 # Geta Piece (分進不合擊)
 
